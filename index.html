@@ -228,9 +228,10 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
   background:var(--bg-base);
   border-radius:var(--radius) var(--radius) 0 0;
   transform:translateY(100%);
+  pointer-events:none;
   transition:transform .35s cubic-bezier(.22,1,.36,1);
 }
-.modal-panel.active{transform:translateY(0)}
+.modal-panel.active{transform:translateY(0);pointer-events:auto}
 .modal-hero-img{
   width:100%;aspect-ratio:16/9;object-fit:cover;
   border-radius:var(--radius) var(--radius) 0 0;
@@ -360,7 +361,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
   }
   .modal-panel.active{
     transform:translate(-50%,-50%) scale(1);
-    opacity:1;
+    opacity:1;pointer-events:auto;
   }
   .modal-hero-img{border-radius:var(--radius) var(--radius) 0 0}
 }
