@@ -60,9 +60,12 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 }
 .logo{font-family:var(--serif);font-size:1.5rem;font-weight:400;letter-spacing:-0.02em}
 .logo span{color:var(--accent)}
-.city-nav{display:flex;gap:16px;font-size:0.85rem}
-.city-nav a{color:var(--text-muted);transition:color .2s}
-.city-nav a.active{color:var(--text-primary)}
+.city-nav{display:flex;gap:8px;font-size:0.85rem}
+.city-nav a{
+  color:var(--text-muted);transition:all .2s;
+  padding:6px 16px;border-radius:20px;border:1px solid transparent;
+}
+.city-nav a.active{color:var(--text-primary);border-color:var(--border-light)}
 .city-nav a:hover{color:var(--text-secondary)}
 .back-btn{
   display:none;align-items:center;gap:6px;
@@ -76,24 +79,25 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
    HERO
    ============================================================ */
 .hero{
-  max-width:720px;margin:0 auto;
-  padding:80px 24px 48px;text-align:center;
+  max-width:1200px;margin:0 auto;
+  padding:80px 24px 48px;text-align:left;
 }
 .hero h1{
-  font-family:var(--serif);font-size:clamp(2.5rem,6vw,4rem);
-  font-weight:400;line-height:1.1;letter-spacing:-0.03em;
+  font-family:var(--serif);font-size:clamp(2.5rem,8vw,5.5rem);
+  font-weight:400;line-height:1.05;letter-spacing:-0.03em;
   margin-bottom:20px;
 }
+.hero .hero-city{display:block;color:var(--accent);font-style:italic}
 .hero h1 em{font-style:italic;color:var(--accent)}
 .hero p{
   font-size:1.05rem;color:var(--text-secondary);
-  line-height:1.7;max-width:540px;margin:0 auto;
+  line-height:1.7;max-width:540px;
 }
 
 /* ============================================================
    CATEGORY GRID (Landing)
    ============================================================ */
-.section-landing{max-width:800px;margin:0 auto;padding:0 24px 80px}
+.section-landing{max-width:1200px;margin:0 auto;padding:0 24px 80px}
 .category-grid{
   display:grid;grid-template-columns:repeat(2,1fr);
   gap:16px;
@@ -327,11 +331,12 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 @media(min-width:1024px){
   .site-header{padding:0 48px;height:64px}
   .logo{font-size:1.65rem}
-  .hero{padding:100px 48px 56px}
-  .hero h1{font-size:4rem}
+  .hero{padding:100px 48px 56px;max-width:1200px}
+  .hero h1{font-size:5.5rem}
+  .hero .hero-city{font-size:0.45em}
   .hero p{font-size:1.15rem}
-  .section-landing{max-width:1000px;padding:0 48px 100px}
-  .category-grid{grid-template-columns:repeat(2,1fr);gap:20px}
+  .section-landing{max-width:1200px;padding:0 48px 100px}
+  .category-grid{grid-template-columns:repeat(3,1fr);gap:20px}
   .category-card-img{aspect-ratio:16/9}
   .category-card-body{padding:20px 22px 22px}
   .category-card-name{font-size:1.5rem}
@@ -449,7 +454,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 <!-- LANDING -->
 <div id="landing">
   <section class="hero">
-    <h1>Austin — <em>Eat Here</em></h1>
+    <h1><span class="hero-city">Austin</span>Eat Here</h1>
     <p>10 food categories, 90 restaurants, zero bad meals. A curated eating guide for your Austin trip.</p>
   </section>
   <section class="section-landing">
