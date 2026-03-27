@@ -1,0 +1,2221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YesChef! — Austin Eating Guide</title>
+<meta name="description" content="10 food categories, 90 restaurants, zero bad meals. A curated eating guide for your Austin trip.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN SYSTEM
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-base:#0A0A0A;
+  --bg-card:#141414;
+  --bg-card-hover:#1A1A1A;
+  --bg-surface:#111111;
+  --border:#1E1E1E;
+  --border-light:#2A2A2A;
+  --accent:#C84B31;
+  --accent-dim:#C84B3133;
+  --accent-glow:#C84B3155;
+  --text-primary:#F0EDE6;
+  --text-secondary:#9A9590;
+  --text-muted:#5A5550;
+  --text-dim:#4A4540;
+  --serif:'Instrument Serif',Georgia,serif;
+  --sans:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --radius:16px;
+  --radius-sm:8px;
+  --radius-xs:4px;
+}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--sans);
+  background:var(--bg-base);
+  color:var(--text-primary);
+  line-height:1.6;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.site-header{
+  position:sticky;top:0;z-index:100;
+  background:rgba(10,10,10,0.85);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  padding:0 24px;height:60px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.logo{font-family:var(--serif);font-size:1.5rem;font-weight:400;letter-spacing:-0.02em}
+.logo span{color:var(--accent)}
+.city-nav{display:flex;gap:16px;font-size:0.85rem}
+.city-nav a{color:var(--text-muted);transition:color .2s}
+.city-nav a.active{color:var(--text-primary)}
+.city-nav a:hover{color:var(--text-secondary)}
+.back-btn{
+  display:none;align-items:center;gap:6px;
+  font-size:0.85rem;color:var(--text-secondary);
+  transition:color .2s;cursor:pointer;
+}
+.back-btn:hover{color:var(--text-primary)}
+.back-btn svg{width:16px;height:16px}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{
+  max-width:720px;margin:0 auto;
+  padding:80px 24px 48px;text-align:center;
+}
+.hero h1{
+  font-family:var(--serif);font-size:clamp(2.5rem,6vw,4rem);
+  font-weight:400;line-height:1.1;letter-spacing:-0.03em;
+  margin-bottom:20px;
+}
+.hero h1 em{font-style:italic;color:var(--accent)}
+.hero p{
+  font-size:1.05rem;color:var(--text-secondary);
+  line-height:1.7;max-width:540px;margin:0 auto;
+}
+
+/* ============================================================
+   CATEGORY GRID (Landing)
+   ============================================================ */
+.section-landing{max-width:800px;margin:0 auto;padding:0 24px 80px}
+.category-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);
+  gap:16px;
+}
+.category-card{
+  position:relative;border-radius:var(--radius);
+  overflow:hidden;cursor:pointer;
+  background:var(--bg-card);border:1px solid var(--border);
+  transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease;
+  opacity:0;transform:translateY(20px);
+  animation:fadeInUp .5s ease forwards;
+}
+.category-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 12px 40px rgba(0,0,0,0.4);
+  border-color:var(--border-light);
+}
+.category-card-img{
+  width:100%;aspect-ratio:16/10;object-fit:cover;
+  filter:brightness(0.7);transition:filter .3s ease;
+}
+.category-card:hover .category-card-img{filter:brightness(0.85)}
+.category-card-body{padding:16px 18px 18px}
+.category-card-name{
+  font-family:var(--serif);font-size:1.35rem;
+  font-weight:400;margin-bottom:4px;
+}
+.category-card-tagline{
+  font-size:0.82rem;color:var(--text-secondary);
+  margin-bottom:8px;line-height:1.4;
+}
+.category-card-count{
+  font-size:0.72rem;color:var(--text-muted);
+  text-transform:uppercase;letter-spacing:0.08em;
+  font-weight:500;
+}
+
+/* ============================================================
+   CATEGORY PAGE
+   ============================================================ */
+.section-category{
+  display:none;max-width:1100px;margin:0 auto;padding:0 24px 80px;
+}
+.section-category.active{display:block}
+.cat-hero{max-width:720px;margin:0 auto 48px;padding-top:40px}
+.cat-hero h2{
+  font-family:var(--serif);font-size:clamp(2rem,5vw,3rem);
+  font-weight:400;line-height:1.15;margin-bottom:24px;
+  letter-spacing:-0.02em;
+}
+.cat-editorial{
+  font-size:0.95rem;color:var(--text-secondary);
+  line-height:1.8;white-space:pre-line;
+}
+.cat-editorial p{margin-bottom:16px}
+.restaurant-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:18px;
+}
+.restaurant-card{
+  position:relative;border-radius:var(--radius);overflow:hidden;
+  background:var(--bg-card);border:1px solid var(--border);
+  cursor:pointer;
+  transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease;
+  opacity:0;transform:translateY(20px);
+}
+.restaurant-card.visible{animation:fadeInUp .5s ease forwards}
+.restaurant-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 12px 40px rgba(0,0,0,0.4);
+  border-color:var(--border-light);
+}
+.rest-card-img-wrap{position:relative;width:100%;aspect-ratio:16/11;overflow:hidden}
+.rest-card-img{
+  width:100%;height:100%;object-fit:cover;
+  filter:brightness(0.8);transition:filter .3s ease;
+}
+.restaurant-card:hover .rest-card-img{filter:brightness(0.95)}
+.badge-rank{
+  position:absolute;top:10px;left:10px;
+  background:rgba(10,10,10,0.85);
+  color:var(--text-primary);font-size:0.7rem;
+  font-weight:600;letter-spacing:0.05em;
+  padding:4px 8px;border-radius:var(--radius-xs);
+}
+.badge-score{
+  position:absolute;top:10px;right:10px;
+  background:var(--accent);color:#fff;
+  font-size:0.75rem;font-weight:700;
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+}
+.rest-card-body{padding:14px 16px 16px}
+.rest-card-name{
+  font-family:var(--serif);font-size:1.1rem;
+  font-weight:400;margin-bottom:4px;line-height:1.25;
+}
+.rest-card-meta{
+  font-size:0.78rem;color:var(--text-muted);margin-bottom:8px;
+}
+.rest-card-tags{
+  display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;
+}
+.rest-card-tag{
+  font-size:0.65rem;text-transform:uppercase;
+  letter-spacing:0.06em;font-weight:500;
+  color:var(--text-muted);background:var(--bg-base);
+  padding:3px 8px;border-radius:var(--radius-xs);
+}
+.rest-card-hook{
+  font-size:0.82rem;color:var(--text-secondary);
+  line-height:1.5;
+}
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+.modal-overlay{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,0.75);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  opacity:0;pointer-events:none;
+  transition:opacity .3s ease;
+}
+.modal-overlay.active{opacity:1;pointer-events:auto}
+.modal-panel{
+  position:fixed;bottom:0;left:0;right:0;z-index:201;
+  max-height:92vh;overflow-y:auto;
+  background:var(--bg-base);
+  border-radius:var(--radius) var(--radius) 0 0;
+  transform:translateY(100%);
+  transition:transform .35s cubic-bezier(.22,1,.36,1);
+}
+.modal-overlay.active+.modal-panel,
+.modal-panel.active{transform:translateY(0)}
+.modal-hero-img{
+  width:100%;aspect-ratio:16/9;object-fit:cover;
+  border-radius:var(--radius) var(--radius) 0 0;
+}
+.modal-hero-wrap{position:relative}
+.modal-close{
+  position:absolute;top:16px;left:16px;
+  width:36px;height:36px;border-radius:50%;
+  background:rgba(10,10,10,0.7);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:1.2rem;
+  transition:background .2s;z-index:5;
+}
+.modal-close:hover{background:rgba(10,10,10,0.9)}
+.modal-score{
+  position:absolute;top:16px;right:16px;
+  background:var(--accent);color:#fff;
+  font-size:1rem;font-weight:700;
+  width:48px;height:48px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  z-index:5;
+}
+.modal-body{padding:28px 24px 40px;max-width:640px;margin:0 auto}
+.modal-name{
+  font-family:var(--serif);font-size:1.8rem;
+  font-weight:400;line-height:1.2;margin-bottom:6px;
+}
+.modal-address{
+  font-size:0.85rem;color:var(--text-muted);margin-bottom:16px;
+}
+.modal-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.modal-tag{
+  font-size:0.72rem;text-transform:uppercase;
+  letter-spacing:0.06em;font-weight:500;
+  padding:5px 12px;border-radius:20px;
+}
+.modal-tag.cuisine{background:var(--accent-dim);color:var(--accent)}
+.modal-tag.vibe{background:var(--bg-card);color:var(--text-secondary);border:1px solid var(--border)}
+.modal-perfect{
+  font-size:0.85rem;color:var(--text-secondary);
+  margin-bottom:20px;
+}
+.modal-perfect strong{color:var(--text-primary);font-weight:500}
+.modal-editorial{
+  font-size:0.95rem;color:var(--text-secondary);
+  line-height:1.8;margin-bottom:24px;
+  padding-left:16px;border-left:3px solid var(--accent);
+}
+.modal-dontmiss{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:16px 18px;
+  margin-bottom:28px;
+}
+.modal-dontmiss-label{
+  font-size:0.7rem;text-transform:uppercase;
+  letter-spacing:0.08em;font-weight:600;
+  color:var(--accent);margin-bottom:6px;
+}
+.modal-dontmiss-text{
+  font-size:0.9rem;color:var(--text-primary);line-height:1.5;
+}
+.modal-actions{display:flex;gap:10px;flex-wrap:wrap}
+.modal-btn{
+  flex:1;min-width:120px;padding:12px 16px;
+  border-radius:var(--radius-sm);font-size:0.85rem;
+  font-weight:600;text-align:center;
+  transition:all .2s ease;display:inline-flex;
+  align-items:center;justify-content:center;gap:6px;
+}
+.modal-btn.primary{background:var(--accent);color:#fff}
+.modal-btn.primary:hover{background:#d9593f}
+.modal-btn.secondary{background:var(--bg-card);color:var(--text-primary);border:1px solid var(--border)}
+.modal-btn.secondary:hover{border-color:var(--border-light);background:var(--bg-card-hover)}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.site-footer{
+  text-align:center;padding:40px 24px;
+  border-top:1px solid var(--border);
+  font-size:0.8rem;color:var(--text-dim);
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes fadeInUp{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes fadeIn{
+  from{opacity:0}to{opacity:1}
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media(max-width:900px){
+  .restaurant-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:600px){
+  .hero{padding:48px 20px 32px}
+  .hero h1{font-size:2.2rem}
+  .category-grid{grid-template-columns:1fr 1fr;gap:12px}
+  .category-card-name{font-size:1.15rem}
+  .restaurant-grid{grid-template-columns:1fr 1fr;gap:12px}
+  .rest-card-name{font-size:1rem}
+  .section-category{padding:0 16px 60px}
+  .section-landing{padding:0 16px 60px}
+  .modal-body{padding:24px 20px 36px}
+  .modal-name{font-size:1.5rem}
+  .site-header{padding:0 16px}
+  .cat-hero{padding-top:24px}
+}
+@media(max-width:400px){
+  .category-grid{gap:10px}
+  .restaurant-grid{gap:10px}
+  .modal-actions{flex-direction:column}
+  .modal-btn{min-width:unset}
+}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg-base)}
+::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--text-dim)}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div style="display:flex;align-items:center;gap:16px">
+    <button class="back-btn" id="backBtn" onclick="showLanding()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Back
+    </button>
+    <a class="logo" href="#" onclick="showLanding();return false">Yes<span>Chef!</span></a>
+  </div>
+  <nav class="city-nav">
+    <a href="#" class="active">Austin</a>
+    <a href="#" style="opacity:0.35;pointer-events:none">Philadelphia</a>
+  </nav>
+</header>
+
+<!-- LANDING -->
+<div id="landing">
+  <section class="hero">
+    <h1>Austin — <em>Eat Here</em></h1>
+    <p>10 food categories, 90 restaurants, zero bad meals. A curated eating guide for your Austin trip.</p>
+  </section>
+  <section class="section-landing">
+    <div class="category-grid" id="categoryGrid"></div>
+  </section>
+</div>
+
+<!-- CATEGORY PANELS (generated by JS) -->
+<div id="categoryPanels"></div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
+<div class="modal-panel" id="modalPanel">
+  <div class="modal-hero-wrap">
+    <img class="modal-hero-img" id="modalImg" src="" alt="">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-score" id="modalScore"></div>
+  </div>
+  <div class="modal-body">
+    <h3 class="modal-name" id="modalName"></h3>
+    <p class="modal-address" id="modalAddress"></p>
+    <div class="modal-tags" id="modalTags"></div>
+    <p class="modal-perfect" id="modalPerfect"></p>
+    <p class="modal-editorial" id="modalEditorial"></p>
+    <div class="modal-dontmiss">
+      <div class="modal-dontmiss-label">Don't Miss</div>
+      <div class="modal-dontmiss-text" id="modalDontMiss"></div>
+    </div>
+    <div class="modal-actions" id="modalActions"></div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  YesChef! Austin — A curated eating guide. Data verified March 2026.<br>
+  Built by humans who eat here.
+</footer>
+
+<script>
+// DATA
+// YesChef! Austin — Complete Restaurant Data
+// All restaurants verified via web search as of March 2026
+// 10 categories × 9 restaurants = 90 total
+
+const YESCHEF_DATA = {
+  meta: {
+    city: "Austin",
+    tagline: "10 food categories, 90 restaurants, zero bad meals. A curated eating guide for your Austin trip.",
+    hero_title: "Austin — Eat Here",
+    accent: "#C84B31"
+  },
+
+  categories: [
+    // =========================================================================
+    // 1. TEXAS BBQ
+    // =========================================================================
+    {
+      id: "texas-bbq",
+      name: "Texas BBQ",
+      tagline: "Salt, pepper, post oak, patience.",
+      image: "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=600&h=450&fit=crop",
+      editorial: `Texas barbecue isn't just food in Austin — it's infrastructure. The city has more Michelin-starred BBQ joints than anywhere else on the planet, and the range runs from purist Central Texas brisket temples where salt and pepper are the only seasonings to fusion operations blending Egyptian spices, Asian aromatics, and Cajun heat into the smoke. The 2025 Texas Monthly Top 50 placed two Austin joints in the top 10, and the scene is still accelerating.
+
+If you're visiting from out of town: the best places sell out. Franklin and La Barbecue have lines that start before the doors open. LeRoy & Lewis and InterStellar are easier to get into but still draw crowds by noon. The food truck spots have limited hours — check before you go. The move is to hit a big-name spot for one meal and a food truck for another.
+
+The new guard is as exciting as the legends. KG BBQ folds Egyptian spices into Central Texas technique. Loro merges Aaron Franklin's smoke with Tyson Cole's Japanese precision. And Micklethwait just opened a brick-and-mortar after years of being one of the best trailers in the state. Austin BBQ has never been deeper.`,
+      restaurants: [
+        {
+          rank: 1,
+          name: "Franklin Barbecue",
+          neighborhood: "East Austin",
+          address: "900 E 11th St, Austin, TX 78702",
+          lat: 30.2701, lng: -97.7262,
+          cuisine_tags: ["Central Texas BBQ", "Brisket", "Smoked Meats"],
+          price: "$$",
+          score: 9.8,
+          perfect_for: ["The bucket list", "Out-of-town guests", "Once-in-a-lifetime meals"],
+          editorial: "The most famous brisket in America, and it lives up to every word. Aaron Franklin turned a tiny trailer into a James Beard Award, a Michelin Bib Gourmand, and a four-time Southern Living #1. The moist brisket has a bark that crunches and a center that melts. The line starts at 9 AM and that's part of the experience — bring camp chairs and beer.",
+          hook: "The most famous brisket in America. Worth every minute in line.",
+          dont_miss: "Moist brisket + jalapeno cheddar sausage + bourbon banana pie",
+          website: "https://franklinbbq.com",
+          image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 2,
+          name: "LeRoy & Lewis",
+          neighborhood: "South Austin",
+          address: "121 Pickle Rd, Austin, TX 78704",
+          lat: 30.2405, lng: -97.7693,
+          cuisine_tags: ["New School BBQ", "Smoked Meats", "Creative"],
+          price: "$$",
+          score: 9.7,
+          perfect_for: ["Adventurous eaters", "BBQ nerds", "The future of smoke"],
+          editorial: "Evan LeRoy is doing things with smoke that nobody else in Texas is attempting. Michelin Star, Texas Monthly #2. The smoked beef cheeks are impossibly tender, the cauliflower burnt ends convert vegetarians to the church of smoke, and the smoked cheeseburger might be the single best burger in Austin. This is new-school BBQ royalty.",
+          hook: "Michelin Star. Texas Monthly #2. The future of Austin BBQ.",
+          dont_miss: "Smoked beef cheeks, cauliflower burnt ends, smoked cheeseburger",
+          website: "https://leroyandlewis.com",
+          image: "https://images.unsplash.com/photo-1558030006-450675393462?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 3,
+          name: "InterStellar BBQ",
+          neighborhood: "North Austin",
+          address: "12233 RR 620 N, Austin, TX 78750",
+          lat: 30.4178, lng: -97.8282,
+          cuisine_tags: ["Creative BBQ", "Smoked Meats", "Full Service"],
+          price: "$$",
+          score: 9.5,
+          perfect_for: ["BBQ as fine dining", "Date night smoke", "Groups"],
+          editorial: "InterStellar earned a Michelin Star and Texas Monthly #6 by treating BBQ like a restaurant, not a line. The peach tea-glazed pork belly is a showstopper, the Mexican chocolate rice pudding closes strong, and the sides are as good as the meat. This is the most complete BBQ restaurant in Austin — full bar, real desserts, no compromise.",
+          hook: "Michelin Star. The most complete BBQ restaurant in the city.",
+          dont_miss: "Peach tea-glazed pork belly, Mexican chocolate rice pudding",
+          website: "https://interstellarbbq.com",
+          image: "https://images.unsplash.com/photo-1606502281004-f86cf1282af5?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 4,
+          name: "La Barbecue",
+          neighborhood: "East Cesar Chavez",
+          address: "2401 E Cesar Chavez St, Austin, TX 78702",
+          lat: 30.2556, lng: -97.7221,
+          cuisine_tags: ["Central Texas BBQ", "Brisket", "Pit-Smoked"],
+          price: "$$",
+          score: 9.4,
+          perfect_for: ["Brisket purists", "The Franklin alternative", "Weekend pilgrimage"],
+          editorial: "Ali Clem is one of four BBQ pitmasters in the world with a Michelin Star, and La Barbecue is the real deal. The fatty brisket is extraordinary — deep smoke ring, peppery bark, juicy center. The chipotle slaw adds heat, and the shells & cheese is the best side in Austin BBQ. Shorter line than Franklin, same tier of meat.",
+          hook: "Michelin Star. Fatty brisket that rivals anyone in Texas.",
+          dont_miss: "Fatty brisket, chipotle slaw, shells & cheese",
+          website: "https://www.labarbecue.com",
+          image: "https://images.unsplash.com/photo-1623653387945-2fd25214f8fc?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 5,
+          name: "Terry Black's Barbecue",
+          neighborhood: "Barton Springs",
+          address: "1003 Barton Springs Rd, Austin, TX 78704",
+          lat: 30.2614, lng: -97.7548,
+          cuisine_tags: ["Lockhart-Style BBQ", "Brisket", "Classic"],
+          price: "$$",
+          score: 9.1,
+          perfect_for: ["Groups", "First-timers", "No-wait BBQ"],
+          editorial: "The Lockhart dynasty's Austin outpost delivers the most reliable no-line BBQ experience in the city. The brisket is consistently excellent, the beef rib is a caveman's dream, and the banana pudding closes the deal. Terry Black's won't blow your mind like Franklin, but it will never let you down. The right call when you want great BBQ without the production.",
+          hook: "Lockhart legacy. No line. Solid across the board.",
+          dont_miss: "Beef rib, brisket, banana pudding",
+          website: "https://terryblacksbbq.com",
+          image: "https://images.unsplash.com/photo-1504382225012-d1776e97e507?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 6,
+          name: "Valentina's Tex Mex BBQ",
+          neighborhood: "South Austin",
+          address: "11500 Menchaca Rd, Austin, TX 78748",
+          lat: 30.1605, lng: -97.7972,
+          cuisine_tags: ["BBQ-Mex Fusion", "Breakfast Tacos", "Brisket"],
+          price: "$$",
+          score: 9.0,
+          perfect_for: ["Brisket tacos", "The Austin invention", "Weekend drive"],
+          editorial: "Miguel Vidal invented a genre: Tex-Mex BBQ. The Real Deal Holyfield brisket taco — smoked brisket, eggs, potatoes, cheese, salsa on a flour tortilla — started a movement. Worth the drive to South Austin. The regular BBQ plates are excellent too, but you're here for the tacos. Go early on weekends.",
+          hook: "The brisket taco that started a movement. Worth the drive.",
+          dont_miss: "The Real Deal Holyfield brisket taco",
+          website: "https://www.valentinastexmexbbq.com",
+          image: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 7,
+          name: "Loro",
+          neighborhood: "South Lamar",
+          address: "2115 S Lamar Blvd, Austin, TX 78704",
+          lat: 30.2470, lng: -97.7711,
+          cuisine_tags: ["Asian Smokehouse", "Fusion", "Cocktails"],
+          price: "$$",
+          score: 8.9,
+          perfect_for: ["Date night BBQ", "Cocktails + smoke", "Something different"],
+          editorial: "Aaron Franklin and Tyson Cole (Uchi) built an Asian smokehouse that shouldn't work but absolutely does. Brisket with Thai herbs and sticky rice. Smoked salmon with cucumber and yuzu. The cocktail program is legit, the patio is gorgeous, and the vibe is date-night-meets-backyard. This is BBQ for people who want more than meat and white bread.",
+          hook: "Aaron Franklin + Tyson Cole. Asian smokehouse. Date night BBQ.",
+          dont_miss: "Smoked brisket with Thai herbs, oak-smoked salmon",
+          website: "https://loroeats.com",
+          image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 8,
+          name: "KG BBQ",
+          neighborhood: "East Austin",
+          address: "1014 E 6th St, Austin, TX 78702",
+          lat: 30.2629, lng: -97.7322,
+          cuisine_tags: ["Egyptian-Texas BBQ", "Fusion", "Food Truck"],
+          price: "$$",
+          score: 8.8,
+          perfect_for: ["Global BBQ fusion", "Adventurous eaters", "Weekend discovery"],
+          editorial: "Kareem El-Ghayesh folds Egyptian spices into Central Texas smoke and the result is one of the most original BBQ experiences in the country. Za'atar-rubbed brisket, pistachio rice pudding, and a vibe that feels like a backyard party in Cairo crossed with an Austin trailer park. Michelin Bib Gourmand. Thursday through Sunday only — plan accordingly.",
+          hook: "Egyptian-Texas BBQ. Bib Gourmand. Unlike anything else.",
+          dont_miss: "Za'atar brisket, pistachio rice pudding",
+          website: "https://www.kgbbq.com",
+          image: "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 9,
+          name: "Micklethwait Craft Meats",
+          neighborhood: "East Austin",
+          address: "1309 Rosewood Ave, Austin, TX 78702",
+          lat: 30.2685, lng: -97.7255,
+          cuisine_tags: ["Craft BBQ", "Sausage", "Technique-Forward"],
+          price: "$$",
+          score: 8.7,
+          perfect_for: ["Sausage lovers", "BBQ technique nerds", "Weekday lunch"],
+          editorial: "Tom Micklethwait makes the best sausage in Austin — full stop. The jalapeño cheddar, the Oaxacan, the specials that rotate weekly — this is a sausage program that could stand alone as a destination. The brisket and ribs are excellent too, but the sausage is why pitmasters come here on their days off. Now in a brick-and-mortar after years as a beloved trailer.",
+          hook: "Best sausage in Austin. Technique-first craft BBQ.",
+          dont_miss: "Weekly sausage special, jalapeño cheddar sausage",
+          website: "https://craftmeatsaustin.com",
+          image: "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?w=600&h=450&fit=crop"
+        }
+      ]
+    },
+
+    // =========================================================================
+    // 2. TEX-MEX
+    // =========================================================================
+    {
+      id: "tex-mex",
+      name: "Tex-Mex",
+      tagline: "From Bob Armstrong dip to Michelin stars.",
+      image: "https://images.unsplash.com/photo-1615870216519-2f9fa575fa5c?w=600&h=450&fit=crop",
+      editorial: `Austin's Mexican food scene spans a wider range than almost any city in America. On one end, you've got Matt's El Rancho — a 65-year-old Tex-Mex institution where the Bob Armstrong dip is ordered at every single table. On the other, you've got Nixta Taqueria, where Edgar Rico nixtamalizes heirloom corn in-house and earned a Michelin Star doing it. The spectrum between those two poles is where the magic lives.
+
+The new wave of Mexican dining in Austin owes a lot to chefs who trained in Mexico City, Oaxaca, and Puebla, then brought that technique to Texas ingredients. Suerte's confit wagyu brisket suadero tacos, Comedor's architectural modern Mexican, El Naranjo's three-day mole — these aren't Tex-Mex by any traditional definition, but they're the reason Austin's Mexican food scene now competes with Houston and LA.
+
+What makes Austin different: the masa. More restaurants here nixtamalize their own corn than anywhere outside of Mexico. Nixta, ATX Cocina, Suerte — they're all milling daily, sourcing heirloom varieties from small Mexican farms. If you care about tortillas (and you should), Austin is the American capital.`,
+      restaurants: [
+        {
+          rank: 1,
+          name: "Nixta Taqueria",
+          neighborhood: "East Austin",
+          address: "2512 E 12th St, Austin, TX 78702",
+          lat: 30.2753, lng: -97.7155,
+          cuisine_tags: ["Heirloom Corn", "Modern Mexican", "Taqueria"],
+          price: "$$",
+          score: 9.7,
+          perfect_for: ["Serious food lovers", "The corn experience", "Chef-driven tacos"],
+          editorial: "Edgar Rico earned a Michelin Star and James Beard Emerging Chef making tacos from heirloom corn that he nixtamalizes and grinds fresh every morning. The duck carnitas taco on pink corn tortilla is transcendent. Everything is sourced hyperlocally — much of it from the garden next door. This is the most important taqueria in America right now.",
+          hook: "Michelin Star taqueria. Heirloom corn ground daily.",
+          dont_miss: "Duck carnitas taco on pink corn tortilla, tuna tostada",
+          website: "https://www.nixtataqueria.com",
+          image: "https://images.unsplash.com/photo-1613514785940-daed07799d9b?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 2,
+          name: "Suerte",
+          neighborhood: "East Austin",
+          address: "1800 E 6th St, Austin, TX 78702",
+          lat: 30.2612, lng: -97.7253,
+          cuisine_tags: ["Modern Mexican", "Masa", "Farm-to-Table"],
+          price: "$$$",
+          score: 9.5,
+          perfect_for: ["Date night", "Modern Mexican experience", "Cocktail pairing"],
+          editorial: "Chef Fermin Nunez cooks Mexican food through the lens of Texas ingredients, and the result is one of the most exciting restaurants in Austin. The suadero tacos — confit wagyu brisket on house-milled masa — are a religious experience. The tuna tiradito with burnt habanero-apple broth is fearless. Beautiful industrial space, serious cocktail program.",
+          hook: "Confit wagyu brisket suadero tacos. Modern Mexican royalty.",
+          dont_miss: "Suadero tacos, tuna tiradito, elote",
+          website: "https://www.suerteatx.com",
+          image: "https://images.unsplash.com/photo-1599974579688-8dbdd335c77f?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 3,
+          name: "Comedor",
+          neighborhood: "Downtown",
+          address: "501 Colorado St, Austin, TX 78701",
+          lat: 30.2663, lng: -97.7441,
+          cuisine_tags: ["Modern Mexican", "Fine Dining", "Architectural"],
+          price: "$$$$",
+          score: 9.3,
+          perfect_for: ["Special occasions", "Architecture lovers", "Power dinner"],
+          editorial: "Chef Philip Speer's modern Mexican restaurant in a Tom Kundig-designed space is as much about the room as the food — and both are extraordinary. Texas Monthly Best New Restaurant, Esquire and Robb Report nationally recognized. The mole negro takes days to prepare. The lamb barbacoa is fall-apart tender. Dramatic, dimly lit, and deeply serious about Mexican technique.",
+          hook: "Tom Kundig architecture. Modern Mexican fine dining.",
+          dont_miss: "Mole negro, lamb barbacoa, mezcal cocktails",
+          website: "https://comedortx.com",
+          image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 4,
+          name: "El Naranjo",
+          neighborhood: "South Lamar",
+          address: "2717 S Lamar Blvd, Austin, TX 78704",
+          lat: 30.2378, lng: -97.7787,
+          cuisine_tags: ["Oaxacan", "Traditional Mexican", "Mole"],
+          price: "$$$",
+          score: 9.2,
+          perfect_for: ["Mole lovers", "Authentic regional Mexican", "James Beard dining"],
+          editorial: "Iliana de la Vega won the James Beard Award for Best Chef Texas cooking Oaxacan food that takes days to prepare. The mole negro is a revelation — complex, layered, built from 30+ ingredients. The scratch-made tortillas from heirloom corn are perfect. This is interior Mexican food at a level you rarely find outside of Oaxaca itself.",
+          hook: "James Beard winner. Oaxacan mole that takes days to make.",
+          dont_miss: "Mole negro, tamales oaxaquenos, mezcal flight",
+          website: "https://www.elnaranjorestaurant.com",
+          image: "https://images.unsplash.com/photo-1534352956036-cd81e27fed22?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 5,
+          name: "Fonda San Miguel",
+          neighborhood: "North Loop",
+          address: "2330 W North Loop Blvd, Austin, TX 78756",
+          lat: 30.3199, lng: -97.7415,
+          cuisine_tags: ["Interior Mexican", "Classic", "Hacienda"],
+          price: "$$$",
+          score: 9.1,
+          perfect_for: ["Sunday brunch", "Old Austin", "Family celebrations"],
+          editorial: "Since 1975, Fonda San Miguel has been serving interior Mexican food in a space that looks like a colonial-era hacienda — museum-quality art, exotic plants, and a dining room that transports you. The cochinita pibil is outstanding, the enchiladas suizas are perfection, and the Sunday brunch buffet is an Austin institution. Nearly 50 years and still irreplaceable.",
+          hook: "Interior Mexican since 1975. A hacienda in North Austin.",
+          dont_miss: "Cochinita pibil, Sunday brunch buffet",
+          website: "https://www.fondasanmiguel.com",
+          image: "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 6,
+          name: "La Condesa",
+          neighborhood: "Downtown / 2nd Street",
+          address: "400A W 2nd St, Austin, TX 78701",
+          lat: 30.2640, lng: -97.7490,
+          cuisine_tags: ["Mexico City-Inspired", "Modern Mexican", "Cocktails"],
+          price: "$$$",
+          score: 9.0,
+          perfect_for: ["Downtown dinner", "Cocktail-forward Mexican", "Date night"],
+          editorial: "Michelin Recommended and twice James Beard-nominated, La Condesa brings Mexico City sophistication to downtown Austin. Chef Rick Lopez works with locally sourced ingredients to build a menu that honors Mexico City's culinary traditions while feeling distinctly Texan. The bar program is exceptional — some of the best mezcal cocktails in the state.",
+          hook: "Michelin Recommended. Mexico City meets downtown Austin.",
+          dont_miss: "Duck carnitas, mezcal margarita, churros",
+          website: "https://lacondesa.com",
+          image: "https://images.unsplash.com/photo-1625398407796-82650a8c135f?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 7,
+          name: "ATX Cocina",
+          neighborhood: "Downtown / 2nd Street",
+          address: "110 San Antonio St, Austin, TX 78701",
+          lat: 30.2643, lng: -97.7470,
+          cuisine_tags: ["Contemporary Mexican", "Masa", "Gluten-Free"],
+          price: "$$$",
+          score: 8.9,
+          perfect_for: ["Gluten-free dining", "Masa obsessives", "Downtown pre-show"],
+          editorial: "ATX Cocina nixtamalizes heirloom corn varieties from small Mexican farms and builds an entire 100% gluten-free menu around that masa. The result is contemporary Mexican food where the tortilla is the star. The duck mole enchiladas are rich and complex, and the rooftop bar has one of the best views in downtown Austin. Valet parking is complimentary.",
+          hook: "100% gluten-free Mexican. House-milled heirloom masa.",
+          dont_miss: "Duck mole enchiladas, heirloom corn tortillas, rooftop mezcal",
+          website: "https://www.atxcocina.com",
+          image: "https://images.unsplash.com/photo-1565299507177-b0ac66763828?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 8,
+          name: "Matt's El Rancho",
+          neighborhood: "South Lamar",
+          address: "2613 S Lamar Blvd, Austin, TX 78704",
+          lat: 30.2451, lng: -97.7792,
+          cuisine_tags: ["Classic Tex-Mex", "Queso", "Institution"],
+          price: "$$",
+          score: 8.7,
+          perfect_for: ["Old Austin vibes", "Queso pilgrimage", "Family dinner"],
+          editorial: "Over 65 years old and still the Tex-Mex standard. Matt's El Rancho invented the Bob Armstrong Dip — queso loaded with taco meat, guacamole, and sour cream — and it remains the most-ordered item at every table. The spinach poblano enchiladas are excellent, the margaritas are strong, and the room buzzes with the energy of a place that knows exactly what it is.",
+          hook: "65 years strong. Home of the Bob Armstrong Dip.",
+          dont_miss: "Bob Armstrong Dip, spinach poblano enchiladas",
+          website: "https://www.mattselrancho.com",
+          image: "https://images.unsplash.com/photo-1582234372722-50d7ccc30ebd?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 9,
+          name: "El Alma",
+          neighborhood: "Barton Springs / Zilker",
+          address: "1025 Barton Springs Rd, Austin, TX 78704",
+          lat: 30.2600, lng: -97.7557,
+          cuisine_tags: ["Homestyle Mexican", "Rooftop", "Brunch"],
+          price: "$$",
+          score: 8.5,
+          perfect_for: ["Rooftop drinks", "Pre-Zilker dinner", "Weekend brunch"],
+          editorial: "Chef Alma Alcocer cooks Mexican food the way she'd serve it in her own home, and the result is warm, generous, and deeply satisfying. The real draw is the rooftop patio — one of Austin's best outdoor dining perches with views toward Zilker Park. Brunch enchiladas, strong margaritas, and a vibe that feels like a permanent vacation.",
+          hook: "Austin's best rooftop. Homestyle Mexican near Zilker.",
+          dont_miss: "Rooftop margaritas, enchiladas verdes, brunch chilaquiles",
+          website: "https://www.elalmacafe.com",
+          image: "https://images.unsplash.com/photo-1552332386-f8dd00dc2f85?w=600&h=450&fit=crop"
+        }
+      ]
+    },
+
+    // =========================================================================
+    // 3. BREAKFAST TACOS
+    // =========================================================================
+    {
+      id: "breakfast-tacos",
+      name: "Breakfast Tacos",
+      tagline: "Austin's most important meal. On a tortilla.",
+      image: "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=600&h=450&fit=crop",
+      editorial: `Austin didn't invent the breakfast taco, but Austin perfected the culture around it. This is a city where people have genuine opinions about flour versus corn, where food trucks open at 6 AM and sell out by 10, and where the question "where do you get your tacos?" reveals more about a person than their zip code. The breakfast taco is Austin's love language.
+
+The landscape splits roughly into three tiers: institutions (Joe's Bakery, Mi Madre's — been here since your parents were in college), food trucks (Veracruz All Natural, Pueblo Viejo — where the innovation happens), and the new guard (Tacodeli, Bird Bird Biscuit — polished concepts that scaled without losing their soul). All three tiers are essential.
+
+What makes Austin breakfast tacos different from San Antonio or Houston: the influence of food truck culture. Many of the best breakfast tacos in the city come from trailers parked in beer garden lots, and that informality breeds creativity. You'll find migas tacos, brisket tacos, Korean-fusion tacos — all before 9 AM. Bring cash, check hours before you go, and never skip the salsa.`,
+      restaurants: [
+        {
+          rank: 1,
+          name: "Veracruz All Natural",
+          neighborhood: "East Austin",
+          address: "2505 Webberville Rd, Austin, TX 78702",
+          lat: 30.2615, lng: -97.7092,
+          cuisine_tags: ["Breakfast Tacos", "Food Truck", "All-Natural"],
+          price: "$",
+          score: 9.5,
+          perfect_for: ["The iconic Austin taco", "Migas pilgrimage", "Quick and perfect"],
+          editorial: "Reina and Maritza Vazquez started Veracruz as a food truck and turned it into an empire — eight locations and counting. Food Network named their migas taco one of the five best tacos in America. The tortillas are handmade, the ingredients are all-natural, and the migas — eggs scrambled with crispy tortilla strips, cheese, pico — are the reason Austin is the breakfast taco capital of America.",
+          hook: "Food Network's top-5 taco in America. The Austin OG.",
+          dont_miss: "Migas taco, green salsa, fresh-squeezed juices",
+          website: "https://www.veracruzallnatural.com",
+          image: "https://images.unsplash.com/photo-1599974579688-8dbdd335c77f?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 2,
+          name: "Tacodeli",
+          neighborhood: "South Austin (Spyglass)",
+          address: "1500 Spyglass Dr, Austin, TX 78746",
+          lat: 30.2666, lng: -97.7854,
+          cuisine_tags: ["Breakfast Tacos", "Salsa Bar", "Multi-Location"],
+          price: "$",
+          score: 9.2,
+          perfect_for: ["Daily ritual", "Salsa exploration", "Reliable perfection"],
+          editorial: "Roberto Espinosa has been making breakfast tacos since 1999, and Tacodeli has quietly become one of the most important taco brands in Texas. The Otto — refried beans, bacon, eggs, cheese — is the gateway drug. The Jess Special adds avocado. Four house salsas, each excellent. Multiple locations means you're never far from one. Order at the counter, not from the coffee shops that resell them.",
+          hook: "Since 1999. Four salsas. The Otto is non-negotiable.",
+          dont_miss: "The Otto taco, Dona sauce, Freakin Vegan taco",
+          website: "https://www.tacodeli.com",
+          image: "https://images.unsplash.com/photo-1624300629298-e9de39c13be5?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 3,
+          name: "Joe's Bakery & Coffee Shop",
+          neighborhood: "East Austin",
+          address: "2305 E 7th St, Austin, TX 78702",
+          lat: 30.2611, lng: -97.7167,
+          cuisine_tags: ["Breakfast Tacos", "Bakery", "Institution"],
+          price: "$",
+          score: 9.1,
+          perfect_for: ["James Beard tradition", "Old Austin", "The real deal"],
+          editorial: "The Avila family has been serving East Austin since 1962. James Beard America's Classics Award 2023 — an honor given to only six restaurants nationwide. The homemade flour tortillas are pillowy and buttered, the carne guisada has depth that only decades of the same recipe can produce. This is the taco your Austin friends grew up on.",
+          hook: "James Beard Classic since 1962. Homemade tortillas, deep roots.",
+          dont_miss: "Carne guisada taco, migas, pan dulce from the bakery",
+          website: "https://joesbakery.com",
+          image: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 4,
+          name: "Bird Bird Biscuit",
+          neighborhood: "East Austin (Manor Rd)",
+          address: "2701 Manor Rd, Austin, TX 78722",
+          lat: 30.2850, lng: -97.7140,
+          cuisine_tags: ["Biscuit Sandwiches", "Fried Chicken", "Breakfast"],
+          price: "$",
+          score: 9.0,
+          perfect_for: ["Biscuit cravings", "Weekend brunch", "Comfort food"],
+          editorial: "Not a taco, but Austin's best breakfast sandwich — and in this city, that's saying something. The fried chicken biscuit is crispy, buttery, and perfectly assembled. Yelp Top 100 Sandwich Shops. Three locations now, all doing online ordering to keep lines manageable. The Nelly — fried chicken, pimento cheese, pickled jalapeno, honey — is the move.",
+          hook: "Austin's best fried chicken biscuit. Yelp Top 100.",
+          dont_miss: "The Nelly, The Birddog, breakfast biscuit tacos",
+          website: "https://www.birdbirdbiscuit.com",
+          image: "https://images.unsplash.com/photo-1550507992-eb63ffee0847?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 5,
+          name: "Pueblo Viejo",
+          neighborhood: "South Austin (Cosmic Coffee)",
+          address: "121 Pickle Rd, Austin, TX 78704",
+          lat: 30.2326, lng: -97.7676,
+          cuisine_tags: ["Street Tacos", "Food Truck", "Mexican"],
+          price: "$",
+          score: 8.9,
+          perfect_for: ["Morning at Cosmic Coffee", "Street-style tacos", "Budget eats"],
+          editorial: "Parked at the Cosmic Coffee beer garden, Pueblo Viejo serves some of the most honest Mexican food in Austin. The breakfast tacos are generous and cheap, the flour tortillas are fresh, and the salsa verde has real heat. Multiple locations around town, but the Cosmic Coffee spot — surrounded by chickens and live oaks — is the quintessential Austin food truck experience.",
+          hook: "Street-style tacos at a beer garden. The real Austin experience.",
+          dont_miss: "Barbacoa breakfast taco, salsa verde, gorditas",
+          website: "https://www.puebloviejoaustin.com",
+          image: "https://images.unsplash.com/photo-1613514785940-daed07799d9b?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 6,
+          name: "Tamale House East",
+          neighborhood: "East Austin",
+          address: "1707 E 6th St, Austin, TX 78702",
+          lat: 30.2615, lng: -97.7244,
+          cuisine_tags: ["Breakfast Tacos", "Tamales", "Institution"],
+          price: "$",
+          score: 8.8,
+          perfect_for: ["East Austin history", "Late-night tacos", "Tamale cravings"],
+          editorial: "Tamale House has existed in various Austin incarnations since 1958 — making it older than most of the buildings around it. The current East 6th Street location keeps the spirit alive with fluffy flour tortillas, solid breakfast tacos, and tamales that are worth a special trip. Open late on weekends, which makes it the rare breakfast taco joint that also serves as a post-bar destination.",
+          hook: "Austin institution since 1958. Fluffy tortillas, tamales, history.",
+          dont_miss: "Pork tamales, migas taco, chile con queso",
+          website: "https://www.tamalehouseeast.com",
+          image: "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 7,
+          name: "Cuantos Tacos",
+          neighborhood: "East Austin",
+          address: "1108 E 12th St, Austin, TX 78702",
+          lat: 30.2728, lng: -97.7282,
+          cuisine_tags: ["Mexico City-Style", "Food Truck", "Bib Gourmand"],
+          price: "$",
+          score: 8.7,
+          perfect_for: ["Michelin-level food trucks", "Mexico City street tacos", "Lunch run"],
+          editorial: "Chef Luis 'Beto' Robledo earned a Michelin Bib Gourmand cooking D.F.-style tacos from a food truck on East 12th. The suadero taco — crispy, beefy, served simply with onion and cilantro — is the star. No pretension, just extraordinary technique on a paper plate. Open Tuesday through Sunday, closed Monday.",
+          hook: "Michelin Bib Gourmand food truck. Mexico City-style suadero.",
+          dont_miss: "Suadero taco, al pastor, salsa roja",
+          website: "https://www.cuantostacosaustin.com",
+          image: "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 8,
+          name: "Papalote Taco House",
+          neighborhood: "South Lamar",
+          address: "2803 S Lamar Blvd, Austin, TX 78704",
+          lat: 30.2410, lng: -97.7811,
+          cuisine_tags: ["Breakfast Tacos", "Fresh Tortillas", "Mexican"],
+          price: "$",
+          score: 8.5,
+          perfect_for: ["Daily taco fix", "Fresh tortillas", "Neighborhood go-to"],
+          editorial: "Papalote's whole identity is built on fresh tortillas and fresh salsa — the foundations of a great taco. Three locations across Austin, all consistent, all focused on doing the basics right. The breakfast tacos are straightforward and satisfying, and the salsa bar gives you control. Nothing trendy, nothing complicated, just well-made tacos all day long.",
+          hook: "Fresh tortillas, fresh salsa. Every taco done right.",
+          dont_miss: "Al pastor breakfast taco, salsa bar, fresh tortillas",
+          website: "https://papalotetx.com",
+          image: "https://images.unsplash.com/photo-1564767609342-620cb19b2357?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 9,
+          name: "Mi Madre's",
+          neighborhood: "East Austin (Manor Rd)",
+          address: "2201 Manor Rd, Austin, TX 78722",
+          lat: 30.2841, lng: -97.7189,
+          cuisine_tags: ["Breakfast Tacos", "Homestyle", "East Austin"],
+          price: "$",
+          score: 8.4,
+          perfect_for: ["Homemade tortillas", "No-frills taco run", "East Austin locals"],
+          editorial: "Mi Madre's is the kind of place where the tortillas are homemade, the salsa has real kick, and the regulars know the staff by name. No Instagram presence needed — this is a word-of-mouth East Austin favorite where the breakfast tacos are endlessly customizable and the vibe is pure neighborhood warmth. Go early, order at the counter, eat in the colorful dining room.",
+          hook: "East Austin locals-only spot. Homemade tortillas, real salsa.",
+          dont_miss: "Chorizo and egg taco, chilaquiles, cafe de olla",
+          website: "https://www.mimadresrestaurant.com",
+          image: "https://images.unsplash.com/photo-1599974579688-8dbdd335c77f?w=600&h=450&fit=crop"
+        }
+      ]
+    },
+
+    // =========================================================================
+    // 4. JAPANESE / SUSHI
+    // =========================================================================
+    {
+      id: "japanese-sushi",
+      name: "Japanese / Sushi",
+      tagline: "Omakase counters in a landlocked state. Trust us.",
+      image: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=600&h=450&fit=crop",
+      editorial: `Austin has no business having a Japanese food scene this good. The city now has more omakase counters than some neighborhoods in Manhattan, anchored by Tyson Cole's Uchi empire and accelerated by a wave of chef-driven counters — Craft Omakase (Michelin Star, ex-Uchiko team), Otoko (12-seat kaiseki inside South Congress Hotel), and Sushi by Scratch (17-course from LA's Phillip Frankland Lee).
+
+What makes Austin's Japanese scene different from LA or New York is the Texas influence. Chefs here aren't trying to replicate Tokyo — they're folding in local ingredients, Tex-Mex heat, Gulf seafood, and Hill Country produce. Otoko's Chef Yoshi has served duck tacos alongside nigiri. Kemuri puts smoked brisket in ramen broth. If you think sushi in a landlocked state is a compromise, Austin will correct you.
+
+The range is remarkable: from Komé's casual neighborhood sushi counter to Uchi's world-class prix fixe, from Kemuri's izakaya-smokehouse mashup to Fukumoto's Tokyo-trained yakitori. Budget accordingly — the omakase counters run $150-$300 per person, but places like Komé and Musashino deliver excellent sushi at normal-restaurant prices.`,
+      restaurants: [
+        {
+          rank: 1,
+          name: "Uchi",
+          neighborhood: "South Lamar",
+          address: "801 S Lamar Blvd, Austin, TX 78704",
+          lat: 30.2576, lng: -97.7663,
+          cuisine_tags: ["Japanese", "Sushi", "James Beard"],
+          price: "$$$$",
+          score: 9.7,
+          perfect_for: ["The definitive Austin sushi", "Special occasions", "Omakase experience"],
+          editorial: "The crown jewel. Tyson Cole won the James Beard Award and built a Japanese restaurant that's been one of the best in America for over 20 years. The crudos are electric, the hot dishes are inventive, and the omakase is a masterclass. Coconut sorbet with chili oil is the most famous dessert in Austin. Reservations essential — book two weeks out.",
+          hook: "James Beard winner. 20+ years. Austin's finest Japanese.",
+          dont_miss: "Maguro sashimi, hot dishes omakase, coconut sorbet with chili oil",
+          website: "https://uchirestaurants.com/uchi-austin",
+          image: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 2,
+          name: "Otoko",
+          neighborhood: "South Congress Hotel",
+          address: "1603 S Congress Ave, Austin, TX 78704",
+          lat: 30.2479, lng: -97.7502,
+          cuisine_tags: ["Kaiseki", "Omakase", "Intimate"],
+          price: "$$$$",
+          score: 9.6,
+          perfect_for: ["Once-in-a-lifetime dinner", "Kaiseki experience", "Counter dining"],
+          editorial: "Twelve seats inside South Congress Hotel. Chef Yoshi Okai serves kaiseki that draws equally from Japanese tradition and Texas ingredients. Reservations drop on the 1st of each month and sell out in minutes. Pre-dinner drinks at the hotel's Watertrade bar are included. This is the most exclusive restaurant in Austin, and it earns every bit of the hype.",
+          hook: "12 seats. Kaiseki meets Texas. Reservations drop the 1st.",
+          dont_miss: "Full kaiseki experience, seasonal nigiri, wagyu course",
+          website: "https://www.otoko-austin.com",
+          image: "https://images.unsplash.com/photo-1553621042-f6e147245754?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 3,
+          name: "Craft Omakase",
+          neighborhood: "North Austin",
+          address: "10900 Domain Dr, Austin, TX 78758",
+          lat: 30.4013, lng: -97.7254,
+          cuisine_tags: ["Omakase", "Sushi", "Michelin Star"],
+          price: "$$$$",
+          score: 9.5,
+          perfect_for: ["Sushi purists", "Counter dining", "Michelin experience"],
+          editorial: "Michelin Star. 22 courses of pristine nigiri and sashimi from ex-Uchiko chefs who chose quiet precision over spectacle. The fish is flown in from Toyosu Market in Tokyo, the rice is seasoned with house-blended vinegar, and every piece is placed with deliberate intention. No loud music, no fireworks — just extraordinary sushi in a focused, intimate setting.",
+          hook: "Michelin Star omakase. 22 courses. Ex-Uchiko precision.",
+          dont_miss: "Full 22-course omakase, seasonal toro, uni",
+          website: "https://www.craftomakase.com",
+          image: "https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 4,
+          name: "Uchiba",
+          neighborhood: "Downtown",
+          address: "300 Colorado St, Austin, TX 78701",
+          lat: 30.2655, lng: -97.7443,
+          cuisine_tags: ["Japanese", "Yakitori", "Sushi"],
+          price: "$$$",
+          score: 9.3,
+          perfect_for: ["Downtown dinner", "Yakitori + sushi combo", "Elegant evening"],
+          editorial: "The newest addition to the Uchi family and arguably the most elegant of the three. Uchiba combines the best sushi of the group with a yakitori program that's new territory for Tyson Cole's empire. The space is stunning — downtown Austin with a rooftop element. The cocktails are more refined than Uchi or Uchiko. The nigiri here might quietly be the best of the three.",
+          hook: "Newest Uchi. Most elegant. Best yakitori of the family.",
+          dont_miss: "Yakitori course, wagyu tartare, A5 wagyu nigiri",
+          website: "https://uchirestaurants.com/uchiba",
+          image: "https://images.unsplash.com/photo-1580822184713-fc5400e7fe10?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 5,
+          name: "Kemuri Tatsu-Ya",
+          neighborhood: "East Austin",
+          address: "2713 E 2nd St, Austin, TX 78702",
+          lat: 30.2574, lng: -97.7157,
+          cuisine_tags: ["Izakaya", "Texas BBQ Fusion", "Japanese"],
+          price: "$$$",
+          score: 9.2,
+          perfect_for: ["Adventurous eaters", "BBQ meets izakaya", "Group dinner"],
+          editorial: "An izakaya that puts Texas BBQ in a Japanese smokehouse and makes it work. James Beard recognized. The brisket tsukemen — smoky brisket dipped in concentrated broth — is unlike anything else in America. The Guaca-Poke is absurdly good. Tiki cocktails, loud music, a backyard patio with a smoker — this is the most fun restaurant in Austin.",
+          hook: "Izakaya + Texas BBQ. Brisket tsukemen. Tiki cocktails.",
+          dont_miss: "Brisket tsukemen, Guaca-Poke, tiki cocktails",
+          website: "https://kemuri-tatsuya.com",
+          image: "https://images.unsplash.com/photo-1526318896980-cf78c088247c?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 6,
+          name: "Sushi by Scratch",
+          neighborhood: "Downtown",
+          address: "310 E 6th St, Austin, TX 78701",
+          lat: 30.2668, lng: -97.7389,
+          cuisine_tags: ["Omakase", "LA Import", "17-Course"],
+          price: "$$$$",
+          score: 9.1,
+          perfect_for: ["LA-caliber omakase", "Counter purists", "Splurge night"],
+          editorial: "Phillip Frankland Lee brought his LA omakase concept to downtown Austin and it's a serious addition to the sushi scene. 17 courses of pristine fish flown from Toyosu Market, served at an intimate counter. The precision is LA-school — clean cuts, minimal garnish, fish-forward. Opened December 2024 and already one of the hardest reservations in town.",
+          hook: "17-course omakase from LA. Toyosu Market fish. Intimate counter.",
+          dont_miss: "Full 17-course omakase, seasonal toro, hand roll finale",
+          website: "https://www.sushibyscratch.com",
+          image: "https://images.unsplash.com/photo-1611143669185-af224c5e3252?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 7,
+          name: "Musashino Sushi Dokoro",
+          neighborhood: "Central Austin",
+          address: "3407 Greystone Dr, Austin, TX 78731",
+          lat: 30.3520, lng: -97.7549,
+          cuisine_tags: ["Edomae Sushi", "Traditional", "OG"],
+          price: "$$$",
+          score: 9.0,
+          perfect_for: ["Traditional sushi", "Where Tyson Cole trained", "No-frills nigiri"],
+          editorial: "The OG. This is where Tyson Cole trained before opening Uchi, and Musashino has been quietly serving some of the best traditional sushi in Austin for decades. Edomae-style — big pieces of fish on well-seasoned rice, no molecular gastronomy, no Instagram plating. The biggest nigiri in Austin and the most traditional omakase experience in the city.",
+          hook: "Where Tyson Cole trained. Biggest nigiri in Austin. The OG.",
+          dont_miss: "Omakase at the counter, salmon belly, uni",
+          website: "https://www.musashinosushi.com",
+          image: "https://images.unsplash.com/photo-1583623025817-d180a2221d0a?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 8,
+          name: "Kome",
+          neighborhood: "Airport Blvd / North Central",
+          address: "4917 Airport Blvd, Austin, TX 78751",
+          lat: 30.3155, lng: -97.7137,
+          cuisine_tags: ["Japanese", "Neighborhood Sushi", "Casual"],
+          price: "$$",
+          score: 8.8,
+          perfect_for: ["Casual sushi night", "No-reservation Japanese", "Budget omakase"],
+          editorial: "Komé is the neighborhood Japanese restaurant Austin needed — excellent sushi, solid ramen, great bento boxes, all without the two-week reservation wait. No reservations taken, which means there's usually a wait, but it moves fast. The chirashi bowl is one of the best lunch values in Austin. Perfect for the night you want great Japanese food without the production.",
+          hook: "No reservations, no pretension, just excellent neighborhood sushi.",
+          dont_miss: "Chirashi bowl, spicy tuna roll, pork belly ramen",
+          website: "https://kaborestaurants.com/kome",
+          image: "https://images.unsplash.com/photo-1562802378-063ec186a863?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 9,
+          name: "Fukumoto",
+          neighborhood: "East Austin",
+          address: "514 Medina St, Austin, TX 78702",
+          lat: 30.2627, lng: -97.7218,
+          cuisine_tags: ["Yakitori", "Izakaya", "Sake"],
+          price: "$$$",
+          score: 8.7,
+          perfect_for: ["Yakitori evening", "Sake exploration", "Izakaya vibe"],
+          editorial: "Tokyo-trained chef serving charcoal-grilled yakitori in a cozy East Austin izakaya. The skewers are the star — chicken thigh with tare, tsukune meatball, negima — each grilled over binchotan charcoal with precision. The sake list is one of the deepest in Austin. Late-night hours make this the perfect post-dinner destination for anyone who's not ready to go home.",
+          hook: "Tokyo-trained yakitori. Deep sake list. East Austin izakaya.",
+          dont_miss: "Chicken thigh skewer, tsukune, sake flight",
+          website: "https://www.fukumoto-atx.com",
+          image: "https://images.unsplash.com/photo-1504544750208-dc0358e63f7f?w=600&h=450&fit=crop"
+        }
+      ]
+    },
+
+    // =========================================================================
+    // 5. SEAFOOD
+    // =========================================================================
+    {
+      id: "seafood",
+      name: "Seafood",
+      tagline: "Landlocked? Not when you taste the oysters.",
+      image: "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=600&h=450&fit=crop",
+      editorial: `Austin is 200 miles from the Gulf Coast, and somehow it has a seafood scene that rivals coastal cities twice its size. Clark's and Perla's built the foundation — proper oyster bars with daily-flown shellfish from both coasts — and the new wave (Fish Shop, Mongers) is pushing it further with raw bars, conservas, and sustainable sourcing.
+
+The Gulf proximity matters more than you'd think. Austin chefs get same-day Gulf shrimp, red snapper, and oysters that haven't traveled through a distribution chain. Perla's flies fish in daily from both coasts. Quality Seafood has been a fresh fish market since 1938. When the supply chain is this short, landlocked becomes an irrelevant detail.
+
+The range here runs from a $5 shrimp po'boy at Quality Seafood to a $200 dinner at Clark's, with everything in between. Garbo's makes New England lobster rolls that rival anything in Maine. Fish Shop brings a California raw bar aesthetic to East Austin. And Mongers doubles as a retail fish market where you can buy the same fish the chefs are cooking — that's how you know the sourcing is real.`,
+      restaurants: [
+        {
+          rank: 1,
+          name: "Perla's Seafood and Oyster Bar",
+          neighborhood: "South Congress",
+          address: "1400 S Congress Ave, Austin, TX 78704",
+          lat: 30.2491, lng: -97.7497,
+          cuisine_tags: ["Oyster Bar", "Seafood", "Gulf Coast"],
+          price: "$$$",
+          score: 9.5,
+          perfect_for: ["SoCo dinner", "Oyster lovers", "Beautiful patio"],
+          editorial: "Austin's prettiest oak-shaded patio and the city's definitive oyster bar. Larry McGuire and Tom Moorman built Perla's in 2009 with one goal: a great seafood joint on South Congress. Fish flown in daily from both coasts, an emphasis on Gulf sourcing, and clean preparations that let the quality speak. The raw bar is immaculate, the fried chicken (yes, at a seafood restaurant) is legendary.",
+          hook: "SoCo's oak-shaded oyster bar. Fish flown daily, both coasts.",
+          dont_miss: "Oyster platter, Gulf snapper, fried chicken, key lime pie",
+          website: "https://perlasaustin.com",
+          image: "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 2,
+          name: "Clark's Oyster Bar",
+          neighborhood: "West 6th / Clarksville",
+          address: "1200 W 6th St, Austin, TX 78703",
+          lat: 30.2709, lng: -97.7559,
+          cuisine_tags: ["Oyster Bar", "Bistro", "Raw Bar"],
+          price: "$$$",
+          score: 9.3,
+          perfect_for: ["Date night seafood", "Martini + oysters", "Upscale casual"],
+          editorial: "Clark's is the Balthazar of Austin — a seafood bistro that makes you feel like you're somewhere cooler than wherever you actually are. Oysters curated from small harvesters across North America. The lobster roll is indulgent, the steak tartare is sharp, and the red snapper ceviche is the best single dish on the menu. The bar scene at happy hour is one of Austin's best.",
+          hook: "Austin's Balthazar. Oysters, lobster rolls, martini culture.",
+          dont_miss: "Red snapper ceviche, lobster roll, steak tartare",
+          website: "https://clarksoysterbar.com",
+          image: "https://images.unsplash.com/photo-1515443961218-a51367888e4b?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 3,
+          name: "Fish Shop",
+          neighborhood: "East Austin",
+          address: "1401 E 6th St, Austin, TX 78702",
+          lat: 30.2623, lng: -97.7267,
+          cuisine_tags: ["Raw Bar", "Coastal", "New American Seafood"],
+          price: "$$",
+          score: 9.1,
+          perfect_for: ["East Austin raw bar", "Dungeness crab", "New seafood"],
+          editorial: "Opened July 2025 and immediately became one of the most talked-about seafood spots in town. Fish Shop brings a coastal raw bar energy to East Austin — oysters, Dungeness crab, mussels, house-made conservas. The fish and chips are excellent, the Dungeness crab roll is lavish, and the spaghetti with clams is a sleeper hit. Early buzz from Texas Monthly and CultureMap.",
+          hook: "East Austin's coastal raw bar. Opened 2025, already essential.",
+          dont_miss: "Dungeness crab roll, oyster platter, fish and chips",
+          website: "https://www.fishshopatx.com",
+          image: "https://images.unsplash.com/photo-1535140728325-a4d3707eee61?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 4,
+          name: "Mongers Market + Kitchen",
+          neighborhood: "Hyde Park",
+          address: "4119 Guadalupe St, Austin, TX 78751",
+          lat: 30.3054, lng: -97.7345,
+          cuisine_tags: ["Seafood Market", "Raw Bar", "Wine Bar"],
+          price: "$$",
+          score: 9.0,
+          perfect_for: ["Market-to-table seafood", "Wine + oysters", "Neighborhood gem"],
+          editorial: "Part restaurant, part retail fish market — and that dual identity is exactly why the seafood here is so good. If they're selling the same fish at the counter that they're cooking in the kitchen, you know it's fresh. The raw bar is excellent, the daily specials follow what's best from the boats, and the wine list is curated by someone who actually drinks wine. Texas Monthly recognized.",
+          hook: "Fish market meets restaurant. If they sell it, they cook it.",
+          dont_miss: "Daily fish specials, oyster happy hour, market fish to-go",
+          website: "https://www.mongersaustin.com",
+          image: "https://images.unsplash.com/photo-1553531384-cc64ac80f931?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 5,
+          name: "Garbo's Lobster",
+          neighborhood: "Central Austin",
+          address: "12709 N Mopac Expy, Austin, TX 78727",
+          lat: 30.4358, lng: -97.7136,
+          cuisine_tags: ["Lobster Rolls", "New England", "Seafood Shack"],
+          price: "$$",
+          score: 8.8,
+          perfect_for: ["Lobster roll cravings", "Casual seafood", "New England vibes"],
+          editorial: "A Maine lobster shack in Central Texas that actually delivers. Garbo's flies in whole lobsters from Maine and Connecticut and serves them in buttered split-top rolls that rival anything on the East Coast. Started as a food truck, now has multiple locations. The lobster roll is the star, but the clam chowder and lobster mac are worth ordering too. New England comfort in the Texas heat.",
+          hook: "Maine lobster rolls in Central Texas. The real thing.",
+          dont_miss: "Connecticut-style lobster roll, clam chowder, lobster mac",
+          website: "https://www.garboslobsteratx.com",
+          image: "https://images.unsplash.com/photo-1559737558-2f5a35f4523b?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 6,
+          name: "Quality Seafood Market",
+          neighborhood: "Airport Blvd / Hyde Park",
+          address: "5621 Airport Blvd, Austin, TX 78751",
+          lat: 30.3265, lng: -97.7114,
+          cuisine_tags: ["Seafood Market", "Casual", "Institution"],
+          price: "$",
+          score: 8.7,
+          perfect_for: ["Cheap and excellent", "Market vibes", "Locals only"],
+          editorial: "Open since 1938, Quality Seafood is Austin's original fish market with a restaurant attached. The seafood po'boys are some of the best sandwiches in the city at any price point. The fried shrimp plate is crispy and generous. Order at the counter, grab a beer from the cooler, and eat at a picnic table in the parking lot. This is Austin seafood at its most honest — no frills, no pretense, just fresh fish.",
+          hook: "Since 1938. Counter-service seafood market. Austin's best po'boy.",
+          dont_miss: "Shrimp po'boy, fried catfish plate, market-fresh fish",
+          website: "https://qualityseafoodmarket.com",
+          image: "https://images.unsplash.com/photo-1544943910-a94b0a0ad67c?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 7,
+          name: "Truluck's",
+          neighborhood: "Downtown / Arboretum",
+          address: "400 Colorado St, Austin, TX 78701",
+          lat: 30.2661, lng: -97.7446,
+          cuisine_tags: ["Upscale Seafood", "Stone Crab", "Steakhouse"],
+          price: "$$$$",
+          score: 8.6,
+          perfect_for: ["Business dinner", "Stone crab season", "Celebration"],
+          editorial: "Truluck's is Austin's power-dinner seafood destination. The stone crab claws (in season) are the best crustacean experience in the city. The crab cake is massive and light on filler. The wine list is deep, the service is polished, and the room has the energy of people celebrating something. Not the most creative kitchen in Austin, but when you want serious seafood in a serious room, Truluck's delivers.",
+          hook: "Stone crab claws. Power dinner. Austin's upscale seafood.",
+          dont_miss: "Stone crab claws (seasonal), crab cake, key lime pie",
+          website: "https://trulucks.com",
+          image: "https://images.unsplash.com/photo-1551218808-94e220e084d2?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 8,
+          name: "Parkside",
+          neighborhood: "Downtown / 6th Street",
+          address: "301 E 6th St, Austin, TX 78701",
+          lat: 30.2668, lng: -97.7404,
+          cuisine_tags: ["Seafood", "Raw Bar", "Cocktails"],
+          price: "$$$",
+          score: 8.4,
+          perfect_for: ["Downtown pre-show", "Raw bar + cocktails", "Late night"],
+          editorial: "Shawn Cirkiel's downtown mainstay has been anchoring the east end of 6th Street for over a decade. The raw bar is well-curated, the Gulf fish preparations are clean and confident, and the cocktail program punches above its weight. Late-night hours make it a rare downtown option for quality seafood after 10 PM. The truffle fries are an Austin guilty pleasure.",
+          hook: "Downtown raw bar. Late-night seafood. Great cocktails.",
+          dont_miss: "Raw bar platter, Gulf fish of the day, truffle fries",
+          website: "https://parkside-austin.com",
+          image: "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 9,
+          name: "Salt Traders Coastal Cooking",
+          neighborhood: "West Lake Hills / Bee Cave",
+          address: "8400 N Hwy 71, Austin, TX 78735",
+          lat: 30.2849, lng: -97.8581,
+          cuisine_tags: ["Coastal Southern", "Casual Seafood", "Patio"],
+          price: "$$",
+          score: 8.2,
+          perfect_for: ["Westside seafood", "Family dinner", "Casual vibe"],
+          editorial: "Salt Traders brings Gulf Coast seafood to West Austin with a casual, patio-forward vibe that feels like a beach shack transplanted to the Hill Country. The peel-and-eat shrimp are generously seasoned, the fish tacos are dependable, and the outdoor seating area is one of the best family-friendly patios on the west side. Not trying to be fancy — just good coastal cooking with cold beer.",
+          hook: "Gulf Coast cooking on the west side. Beach shack vibes.",
+          dont_miss: "Peel-and-eat shrimp, fish tacos, coastal cocktails",
+          website: "https://salttraders.com",
+          image: "https://images.unsplash.com/photo-1509722747041-616f39b57569?w=600&h=450&fit=crop"
+        }
+      ]
+    },
+
+    // =========================================================================
+    // 6. SOUTHEAST ASIAN
+    // =========================================================================
+    {
+      id: "southeast-asian",
+      name: "Southeast Asian",
+      tagline: "Thai, Vietnamese, Malaysian, and beyond.",
+      image: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&h=450&fit=crop",
+      editorial: `Austin's Southeast Asian food scene has undergone a quiet revolution. For decades, it was dominated by solid-but-familiar Thai and Vietnamese spots on North Lamar and Airport Blvd. Now, a new generation of chefs is bringing Singaporean hawker culture (Siti), Northern Thai street food (Dee Dee), and modern Vietnamese pastry (Elizabeth Street Cafe) to neighborhoods across the city.
+
+The Thai scene is particularly strong. Thai Kun brought Thai street food from a Whisler's food truck to a proper brick-and-mortar in the Domain. Sap's Fine Thai has been a South Austin institution for years. And smaller spots like Titaya's and Dee Dee are doing regional Thai cooking — not just pad thai, but som tum, larb, and khao soi that taste like they came from a Chiang Mai night market.
+
+Vietnamese food anchors the scene's budget end — Pho Phong Luu's bowls of pho are some of the best cheap eats in the city, and Elizabeth Street Cafe proved you could serve banh mi alongside croissants and have both be excellent. For visitors: start at Siti for the new wave, hit Qi for dim sum brunch, and close at Elizabeth Street for pastries. That's a full Southeast Asian day in Austin.`,
+      restaurants: [
+        {
+          rank: 1,
+          name: "Siti",
+          neighborhood: "East Austin",
+          address: "1123 E 11th St, Austin, TX 78702",
+          lat: 30.2732, lng: -97.7281,
+          cuisine_tags: ["Southeast Asian", "Singaporean", "Malaysian"],
+          price: "$$$",
+          score: 9.4,
+          perfect_for: ["New Austin dining", "Southeast Asian exploration", "Chef-driven"],
+          editorial: "Chef Laila Bazahm (also behind El Raval) opened Siti in 2025 and immediately became a CultureMap Tastemaker nominee. The menu pulls from Singapore, Malaysia, Indonesia, Thailand, and the Philippines — laksa, rendang, satay, roti canai — all executed with fine-dining technique and home-cooking warmth. The most exciting new Southeast Asian restaurant Austin has seen in years.",
+          hook: "CultureMap Tastemaker nominee. Pan-Southeast Asian from a rising star.",
+          dont_miss: "Laksa, beef rendang, roti canai, coconut pandan dessert",
+          website: "https://www.sitiatx.com",
+          image: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 2,
+          name: "Qi Austin",
+          neighborhood: "West 6th / Clarksville",
+          address: "835 W 6th St, Austin, TX 78703",
+          lat: 30.2706, lng: -97.7521,
+          cuisine_tags: ["Modern Asian", "Dim Sum", "Chinese"],
+          price: "$$$",
+          score: 9.2,
+          perfect_for: ["Dim sum brunch", "Modern Asian dinner", "Elegant ambiance"],
+          editorial: "Qi Austin is the city's best upscale Asian dining experience — a modern Chinese restaurant with a killer dim sum brunch, Peking duck that requires 48-hour notice, and a gorgeous interior that feels like a Hong Kong hotel restaurant. The xiao long bao are properly soupy, the cocktail program is Pan-Asian and creative, and the weekend dim sum service is the best brunch in Austin you're not doing.",
+          hook: "Austin's finest dim sum. Peking duck. Upscale modern Asian.",
+          dont_miss: "Weekend dim sum, Peking duck (48hr notice), xiao long bao",
+          website: "https://qiaustin.com",
+          image: "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 3,
+          name: "Thai Kun",
+          neighborhood: "The Domain",
+          address: "11601 Rock Rose Ave, Austin, TX 78758",
+          lat: 30.3988, lng: -97.7255,
+          cuisine_tags: ["Thai Street Food", "Noodles", "Brick-and-Mortar"],
+          price: "$$",
+          score: 9.0,
+          perfect_for: ["Thai street food", "Bold flavors", "Domain dinner"],
+          editorial: "Thai Kun started as an East Side King food truck at Whisler's bar and grew into a proper restaurant in the Domain. The green curry is intensely aromatic, the papaya salad has real heat, and the pad kra pao (holy basil stir-fry) is the dish that built the reputation. Chef Thai Changthong brings Bangkok street food energy to a sit-down setting without losing any of the fire.",
+          hook: "From food truck to phenomenon. Bangkok street food, real heat.",
+          dont_miss: "Pad kra pao, green curry, papaya salad, Thai tea",
+          website: "https://www.thaikun.com",
+          image: "https://images.unsplash.com/photo-1562565652-a0d8f0c59eb4?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 4,
+          name: "Elizabeth Street Cafe",
+          neighborhood: "South First",
+          address: "1501 S First St, Austin, TX 78704",
+          lat: 30.2454, lng: -97.7598,
+          cuisine_tags: ["Vietnamese", "French Bakery", "Cafe"],
+          price: "$$",
+          score: 8.9,
+          perfect_for: ["Brunch", "Pastry + pho combo", "SoFi neighborhood"],
+          editorial: "A Vietnamese cafe crossed with a French bakery, and somehow both halves work beautifully. The pho is legit — rich, aromatic broth with proper garnishes. The banh mi is crispy and fresh. And then you walk past the pastry case and realize they also make some of the best macarons and croissants in Austin. The sunny dining room and garden patio make it one of the city's best brunch experiences.",
+          hook: "Vietnamese-French cafe. Pho and croissants under one roof.",
+          dont_miss: "Classic pho, banh mi, macarons, Vietnamese iced coffee",
+          website: "https://elizabethstreetcafe.com",
+          image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 5,
+          name: "Coat & Thai",
+          neighborhood: "Zilker / Barton Springs",
+          address: "1720 Barton Springs Rd, Austin, TX 78704",
+          lat: 30.2592, lng: -97.7627,
+          cuisine_tags: ["Thai", "Food Truck", "Casual"],
+          price: "$",
+          score: 8.8,
+          perfect_for: ["Pre-Zilker pad thai", "Quick Thai fix", "Budget eats"],
+          editorial: "A Thai food truck near Zilker Park serving some of the best pad thai and basil fried rice in Austin at food truck prices. The portions are generous, the flavors are bold without being dumbed down, and the location — in a food truck park near Barton Springs — couldn't be more Austin. Perfect for fueling up before or after a swim.",
+          hook: "Thai food truck near Zilker. Bold flavors, budget prices.",
+          dont_miss: "Pad thai, basil fried rice, pad see ew, Thai iced tea",
+          website: "https://www.coatandthai.com",
+          image: "https://images.unsplash.com/photo-1559314809-0d155014e29e?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 6,
+          name: "Dee Dee",
+          neighborhood: "South Austin",
+          address: "4204 Menchaca Rd, Austin, TX 78704",
+          lat: 30.2277, lng: -97.7879,
+          cuisine_tags: ["Northern Thai", "Northeastern Thai", "Food Truck"],
+          price: "$",
+          score: 8.7,
+          perfect_for: ["Regional Thai", "Adventurous eaters", "Food truck discovery"],
+          editorial: "Husband and wife team serving country-style Northeastern Thai food from a trailer in South Austin. This isn't pad-thai-and-spring-roll Thai — it's larb, som tum, sticky rice, and boldly spiced curries that taste like they came from Isaan. The kind of food truck that makes Austin food trucks famous: passionate owners, tiny operation, huge flavors.",
+          hook: "Northeastern Thai from a trailer. Larb, som tum, real Isaan.",
+          dont_miss: "Larb, som tum (papaya salad), sticky rice, massaman curry",
+          website: "https://www.deedeeatx.com",
+          image: "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 7,
+          name: "Sap's Fine Thai",
+          neighborhood: "South Lamar",
+          address: "1601 S 1st St, Austin, TX 78704",
+          lat: 30.2445, lng: -97.7599,
+          cuisine_tags: ["Thai", "Family-Owned", "Neighborhood"],
+          price: "$$",
+          score: 8.5,
+          perfect_for: ["South Austin Thai dinner", "Consistent quality", "Family meal"],
+          editorial: "Sap's has been a South Austin institution for Thai food — the kind of place where regulars order without looking at the menu. The green curry is perfectly balanced, the pad thai is well-executed, and the tom kha gai has the right coconut-to-galangal ratio. Not trying to reinvent anything, just doing Thai food right with consistent quality and friendly service.",
+          hook: "South Austin's reliable Thai. Green curry, done right.",
+          dont_miss: "Green curry, tom kha gai, crispy pork belly, mango sticky rice",
+          website: "https://www.sapsaustin.com",
+          image: "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 8,
+          name: "Pho Phong Luu",
+          neighborhood: "North Lamar",
+          address: "8557 Research Blvd, Austin, TX 78758",
+          lat: 30.3711, lng: -97.7195,
+          cuisine_tags: ["Vietnamese", "Pho", "Budget"],
+          price: "$",
+          score: 8.4,
+          perfect_for: ["Best cheap pho", "Rainy day soup", "Budget Vietnamese"],
+          editorial: "When Austin locals get into arguments about the best pho in town, Pho Phong Luu is always in the conversation. The broth is deeply beefy with star anise and cinnamon, the portions are enormous, and you'll spend less than $15. The spring rolls and vermicelli bowls are solid too, but the pho is why you drive to North Lamar. Cash-heavy, no-frills, exactly what pho should be.",
+          hook: "The best cheap pho in Austin. North Lamar institution.",
+          dont_miss: "Pho tai (rare beef), spring rolls, Vietnamese iced coffee",
+          website: "https://www.phophongluu.com",
+          image: "https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 9,
+          name: "Titaya's Thai Cuisine",
+          neighborhood: "South Lamar",
+          address: "5501 N Lamar Blvd, Austin, TX 78751",
+          lat: 30.3268, lng: -97.7268,
+          cuisine_tags: ["Thai", "Traditional", "Local Favorite"],
+          price: "$$",
+          score: 8.3,
+          perfect_for: ["Traditional Thai", "Lunch special", "Pad thai perfection"],
+          editorial: "Titaya's consistently tops local Thai food polls and Yelp rankings, and for good reason. The menu covers the full Thai playbook — curries, noodles, stir-fries, soups — and everything is executed with care. The lunch specials are a steal. Nothing flashy, no fusion angles, just well-made Thai food from a family that's been at it for years.",
+          hook: "Top-rated Thai on North Lamar. Traditional, consistent, loved.",
+          dont_miss: "Pad thai, massaman curry, tom yum, lunch special",
+          website: "https://titayasthaicuisine.com",
+          image: "https://images.unsplash.com/photo-1559314809-0d155014e29e?w=600&h=450&fit=crop"
+        }
+      ]
+    },
+
+    // =========================================================================
+    // 7. PIZZA
+    // =========================================================================
+    {
+      id: "pizza",
+      name: "Pizza",
+      tagline: "Detroit, Neapolitan, New York — pick your coast.",
+      image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&h=450&fit=crop",
+      editorial: `Austin's pizza scene has exploded from "Home Slice and Via 313" to a full spectrum of styles, techniques, and obsessions. Detroit-style (Via 313), Neapolitan (Bufalina), New York (Allday), Heritage Post-Neapolitan (Moderna), Sicilian (Garage), Roman (Rosie's) — it's all here, and it's all being done by people who care deeply about dough, sauce, and heat.
+
+The two poles of Austin pizza tell the whole story. On one end, Bufalina fires Neapolitan pies in a 900-degree Stefano Ferrara oven for 90 seconds — paper-thin, blistered, wine-list-curated-by-a-James-Beard-nominee level serious. On the other, Via 313 makes thick, cheesy Detroit-style pans that feel like a warm hug from the Midwest. Both are correct. Both are essential.
+
+The newest entries are the most exciting. Moderna opened in late 2025 with Chef Leo Spizzirri's "Heritage Post-Neapolitan" style — hyper-thin crust, dotted cheese, bright sauce — and landed a CultureMap Tastemaker nomination immediately. Allday turned a Hyde Park post office into a New York slice shop that's giving Home Slice real competition for the first time. Austin pizza has never been deeper.`,
+      restaurants: [
+        {
+          rank: 1,
+          name: "Bufalina",
+          neighborhood: "East Cesar Chavez",
+          address: "2215 E Cesar Chavez St, Austin, TX 78702",
+          lat: 30.2543, lng: -97.7218,
+          cuisine_tags: ["Neapolitan", "Wood-Fired", "Wine Program"],
+          price: "$$$",
+          score: 9.6,
+          perfect_for: ["Serious pizza night", "Wine pairing", "Date night"],
+          editorial: "The Infatuation named Bufalina one of the best pizza places in America. Austin Monthly calls it the best pizza in Austin. The 900-degree Stefano Ferrara oven fires Neapolitan pies in 90 seconds — blistered, charred, perfect. The wine program is James Beard semifinalist-level (natural and biodynamic focus). The Margherita is flawless, but the specials are where the magic happens.",
+          hook: "Nationally ranked Neapolitan. James Beard wine program.",
+          dont_miss: "Margherita DOC, daily specials, natural wine selection",
+          website: "https://www.bufalinapizza.com",
+          image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 2,
+          name: "Moderna Bar & Pizzeria",
+          neighborhood: "West 6th",
+          address: "1717 W 6th St, Austin, TX 78703",
+          lat: 30.2721, lng: -97.7596,
+          cuisine_tags: ["Heritage Post-Neapolitan", "Wine Bar", "New"],
+          price: "$$$",
+          score: 9.3,
+          perfect_for: ["Pizza obsessives", "Natural wine", "CultureMap Tastemaker"],
+          editorial: "Chef Leo Spizzirri's 'Heritage Post-Neapolitan' pies — hyper-thin crust, cheese dotted across the surface, bright red sauce — opened in late 2025 and immediately landed a CultureMap Tastemaker nomination. The crust has more crunch than classic Neapolitan, and the toppings are thoughtfully sourced. The bar program is excellent. This is the most exciting new pizza in Austin.",
+          hook: "Heritage Post-Neapolitan. CultureMap Tastemaker nominee.",
+          dont_miss: "Margherita, pepperoni, seasonal specials, Negroni",
+          website: "https://modernapizzeria.com",
+          image: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 3,
+          name: "Via 313",
+          neighborhood: "East Austin",
+          address: "1802 E 6th St, Austin, TX 78702",
+          lat: 30.2615, lng: -97.7234,
+          cuisine_tags: ["Detroit-Style", "Deep Dish", "Cult Following"],
+          price: "$$",
+          score: 9.1,
+          perfect_for: ["Detroit-style cravings", "Group dinner", "Comfort pizza"],
+          editorial: "Brothers Brandon and Zane Hunt, born and raised in the Motor City, brought authentic Detroit-style pizza to Austin and created a cult following. The dough is thick and airy with a crispy cheese crust from the blue steel pans. The Cadillac — prosciutto, fig preserves, gorgonzola, balsamic — is the signature. Multiple locations now, all consistently excellent.",
+          hook: "Detroit-style from actual Detroiters. The Cadillac is iconic.",
+          dont_miss: "The Cadillac, The Detroiter, garlic knots",
+          website: "https://www.via313.com",
+          image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 4,
+          name: "Allday Pizza",
+          neighborhood: "Hyde Park",
+          address: "4300 Speedway, Austin, TX 78751",
+          lat: 30.3048, lng: -97.7320,
+          cuisine_tags: ["New York-Style", "Slice Shop", "Casual"],
+          price: "$",
+          score: 9.0,
+          perfect_for: ["NYC slice fix", "Late-night pizza", "Cheap and excellent"],
+          editorial: "A reimagined Hyde Park post office turned into the best New York-style slice shop Austin has ever had. Allday sells 18-inch pies and big foldable slices that rival anything in Brooklyn. The cheese slice is properly greasy, the pepperoni cups beautifully, and the specials (pickle pizza, Sweet Sausage with Calabrian honey and ricotta) show real creativity. The Infatuation gave it a strong review.",
+          hook: "NYC slices in a converted post office. Austin's best fold.",
+          dont_miss: "Pepperoni slice, Sweet Sausage special, pickle pizza",
+          website: "https://allday.pizza",
+          image: "https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 5,
+          name: "Home Slice Pizza",
+          neighborhood: "South Congress",
+          address: "1415 S Congress Ave, Austin, TX 78704",
+          lat: 30.2492, lng: -97.7495,
+          cuisine_tags: ["New York-Style", "Institution", "Late Night"],
+          price: "$$",
+          score: 8.9,
+          perfect_for: ["SoCo pizza", "Late-night slice", "The Austin classic"],
+          editorial: "Home Slice has been Austin's go-to New York-style pizza since 2005, and it's still the benchmark. The patio on South Congress is iconic, the slices are big and properly foldable, and the full pies are consistent. More Home Slice next door serves slices through a walk-up window until late. Not the most innovative pizza in town anymore, but still the most reliably satisfying.",
+          hook: "SoCo's iconic pizza since 2005. Walk-up window for slices.",
+          dont_miss: "Pepperoni pie, white pizza, late-night walk-up slice",
+          website: "https://homeslicepizza.com",
+          image: "https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 6,
+          name: "Pieous",
+          neighborhood: "Dripping Springs area",
+          address: "166 Hargraves Dr, Austin, TX 78737",
+          lat: 30.2050, lng: -97.9792,
+          cuisine_tags: ["Artisan Pizza", "Pastrami", "Worth the Drive"],
+          price: "$$",
+          score: 8.8,
+          perfect_for: ["Hill Country drive", "Pastrami + pizza combo", "Weekend adventure"],
+          editorial: "Worth the drive to the edge of Austin for pizza and house-smoked pastrami that Texas Highways magazine called some of the best dough in the state. Pieous ferments their dough for days, makes their own mozzarella, and smokes their own pastrami — the kind of dual-threat operation that shouldn't exist in a strip mall near Dripping Springs. The pastrami pizza combines both obsessions into one dish.",
+          hook: "Pizza + house-smoked pastrami. Worth the Hill Country drive.",
+          dont_miss: "Pastrami pizza, Margherita, house-smoked pastrami sandwich",
+          website: "https://www.pieous.com",
+          image: "https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 7,
+          name: "Bufalina Due",
+          neighborhood: "Allandale / Burnet Rd",
+          address: "6555 Burnet Rd, Austin, TX 78757",
+          lat: 30.3411, lng: -97.7384,
+          cuisine_tags: ["Neapolitan", "Neighborhood", "Wine"],
+          price: "$$",
+          score: 8.7,
+          perfect_for: ["Neighborhood Neapolitan", "Less wait than original", "Casual night"],
+          editorial: "Bufalina's second location on Burnet Road takes everything great about the original — the oven, the dough, the natural wine — and puts it in a more casual, easier-to-access neighborhood setting. Shorter waits, same quality pies, slightly more relaxed vibe. The menu mirrors the original with a few location-specific specials. If you can't get into Bufalina proper, Due is the move.",
+          hook: "Same Bufalina quality, Burnet Road access, shorter waits.",
+          dont_miss: "Margherita, pepperoni, seasonal specials, natural wine",
+          website: "https://www.bufalinapizza.com/bufalina-due",
+          image: "https://images.unsplash.com/photo-1588315029754-2dd089d39a1a?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 8,
+          name: "East Side Pies",
+          neighborhood: "East Austin",
+          address: "1401 Rosewood Ave, Austin, TX 78702",
+          lat: 30.2689, lng: -97.7265,
+          cuisine_tags: ["Thin Crust", "Local", "Delivery"],
+          price: "$",
+          score: 8.4,
+          perfect_for: ["East Austin delivery", "Thin crust fans", "Neighborhood pizza"],
+          editorial: "East Side Pies has been East Austin's neighborhood pizza shop for years — thin crust, creative toppings, and a delivery radius that covers most of the east side. The crust is crispy and light, the sauce is well-balanced, and the rotating specials keep regulars coming back. Not trying to compete with Bufalina's ambition — just being the best pizza you can get on your couch in East Austin.",
+          hook: "East Austin's neighborhood thin crust. Great delivery.",
+          dont_miss: "Pepperoni, wild mushroom, seasonal specials",
+          website: "https://eastsidepies.com",
+          image: "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 9,
+          name: "Rosie's Wine Bar + Pizza",
+          neighborhood: "East Austin",
+          address: "2312 E Cesar Chavez St, Austin, TX 78702",
+          lat: 30.2546, lng: -97.7202,
+          cuisine_tags: ["Roman-Style", "Wine Bar", "Natural Wine"],
+          price: "$$",
+          score: 8.3,
+          perfect_for: ["Wine + pizza", "Roman-style pies", "East Austin evening"],
+          editorial: "Rosie's combines a serious natural wine bar with Roman-style pizza — thin, crispy, cut into rectangles — and the pairing works beautifully. The wine list is curated by someone who clearly spends time in Italy, and the pizza is a perfect drinking companion. The space is small and intimate, the vibe is neighborhood wine bar, and the whole experience feels like a secret East Austin evening.",
+          hook: "Roman-style pizza meets natural wine bar. East Austin secret.",
+          dont_miss: "Roman-style pepperoni, burrata appetizer, natural wine flight",
+          website: "https://www.rosieswinebar.com",
+          image: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&h=450&fit=crop"
+        }
+      ]
+    },
+
+    // =========================================================================
+    // 8. SOUL FOOD / SOUTHERN
+    // =========================================================================
+    {
+      id: "soul-food-southern",
+      name: "Soul Food / Southern",
+      tagline: "Biscuits, fried chicken, and deep roots.",
+      image: "https://images.unsplash.com/photo-1527477396000-e27163b4d56e?w=600&h=450&fit=crop",
+      editorial: `Austin's Southern food story is inseparable from the history of East Austin's Black community. Restaurants like Hoover's Cooking and Joe's Bakery (also in our Breakfast Tacos category) have been feeding the neighborhood for decades, serving the kind of soul food — fried catfish, collard greens, mac and cheese — that connects people to generations of tradition.
+
+The elevated end of the spectrum is equally impressive. Olamaie earned a Michelin Star serving contemporary Southern food in a house near campus. Fixe Southern House does upscale comfort food downtown. And Aaron Franklin's Uptown Sports Club reimagines a 1949 East Austin venue as a Louisiana-meets-Texas brasserie. The range — from $8 fried chicken plates to $175 prix fixe — is what makes the category compelling.
+
+What's happening right now in Austin Southern food is exciting: new spots like Whip My Soul are bringing family recipes to broader audiences, Tumble 22 is making Nashville hot chicken a citywide obsession, and Lucy's Fried Chicken has become the bar-meets-restaurant model that every neighborhood needs. The common thread is unpretentious cooking that makes you feel at home.`,
+      restaurants: [
+        {
+          rank: 1,
+          name: "Olamaie",
+          neighborhood: "Downtown / Campus",
+          address: "1610 San Antonio St, Austin, TX 78701",
+          lat: 30.2768, lng: -97.7456,
+          cuisine_tags: ["Contemporary Southern", "Michelin Star", "Prix Fixe"],
+          price: "$$$$",
+          score: 9.6,
+          perfect_for: ["Special occasion", "Michelin Southern", "The biscuit experience"],
+          editorial: "Michelin Star, James Beard Finalist, and the best biscuit in America. Chef Michael Foust named the restaurant for his grandmother, mother, and daughter, and the food carries that generational weight — contemporary Southern cooking with deep roots. The 4-course prix fixe ($175) changes seasonally but always centers buttermilk biscuits served warm with whipped honey butter and sea salt. A house near campus turned into Austin's finest Southern dining.",
+          hook: "Michelin Star. Best biscuit in America. Southern prix fixe.",
+          dont_miss: "Buttermilk biscuits with honey butter, seasonal prix fixe",
+          website: "https://www.olamaieaustin.com",
+          image: "https://images.unsplash.com/photo-1527477396000-e27163b4d56e?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 2,
+          name: "Uptown Sports Club",
+          neighborhood: "East Austin",
+          address: "1200 E 6th St, Austin, TX 78702",
+          lat: 30.2624, lng: -97.7303,
+          cuisine_tags: ["Louisiana-Texas", "Brasserie", "Aaron Franklin"],
+          price: "$$",
+          score: 9.2,
+          perfect_for: ["Casual dinner", "Late night", "Louisiana comfort"],
+          editorial: "Aaron Franklin took a dormant 1949 East Austin sports club and turned it into a Louisiana-Texas brasserie that feels like the platonic ideal of a neighborhood restaurant. Gumbo, po'boys, étouffée — all cooked with the same care Franklin brings to brisket. The cocktails are classic and strong, the room buzzes until late, and the energy is pure East Austin community. Brunch on weekends is excellent.",
+          hook: "Aaron Franklin's non-BBQ spot. Louisiana brasserie in a 1949 venue.",
+          dont_miss: "Gumbo, shrimp po'boy, bourbon cocktails, weekend brunch",
+          website: "https://www.uptownsports.club",
+          image: "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 3,
+          name: "Fixe Southern House",
+          neighborhood: "Downtown / Warehouse District",
+          address: "500 W 5th St, Austin, TX 78701",
+          lat: 30.2670, lng: -97.7473,
+          cuisine_tags: ["Upscale Southern", "Brunch", "Steakhouse"],
+          price: "$$$",
+          score: 9.0,
+          perfect_for: ["Downtown celebration", "Southern brunch", "Group dinner"],
+          editorial: "Fixe takes Southern comfort food and gives it a downtown polish — biscuits and gravy elevated, pork chops perfectly cooked, catfish crispy and light. The space is handsome with exposed brick and warm lighting. Weekend brunch with live music is an Austin institution. The happy hour (daily 4-6) with discounted biscuits and drinks is one of the best deals downtown.",
+          hook: "Upscale Southern downtown. Biscuits at happy hour.",
+          dont_miss: "Deviled eggs, fried catfish, biscuits, weekend brunch",
+          website: "https://fixesouthernhouse.com",
+          image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 4,
+          name: "Whip My Soul",
+          neighborhood: "North Austin (FM 620)",
+          address: "11416 N FM 620, Austin, TX 78726",
+          lat: 30.4392, lng: -97.8449,
+          cuisine_tags: ["Soul Food", "Fried Chicken", "Family-Owned"],
+          price: "$",
+          score: 8.9,
+          perfect_for: ["Real soul food", "Comfort food cravings", "Family meal"],
+          editorial: "A family-owned soul food spot in North Austin that quickly became one of the most beloved restaurants in the city — Yelp ranked it nationally. The fried chicken is crispy and juicy, the mac and cheese is baked golden, and the collard greens have the depth that comes from hours of cooking. Nothing fancy, no gimmicks, just the kind of soul food that makes you close your eyes and smile.",
+          hook: "Yelp-ranked soul food. Fried chicken, mac, and collard greens.",
+          dont_miss: "Fried chicken, Cheezy Mac, collard greens, peach cobbler",
+          website: "https://whipmysoul.shop",
+          image: "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 5,
+          name: "Hoover's Cooking",
+          neighborhood: "East Austin (Manor Rd)",
+          address: "2002 Manor Rd, Austin, TX 78722",
+          lat: 30.2831, lng: -97.7198,
+          cuisine_tags: ["Home Cooking", "Cajun-Southern", "Institution"],
+          price: "$$",
+          score: 8.8,
+          perfect_for: ["Austin history", "Southern comfort", "East Austin tradition"],
+          editorial: "Hoover Alexander has been feeding East Austin for nearly 30 years with a menu that spans Southern, Tex-Mex, Cajun, and BBQ. The fried catfish is legendary, the meatloaf hits like home, and the crawfish étouffée brings the bayou to Manor Road. An East Austin institution — go while you can, as Hoover has announced his retirement for mid-2026.",
+          hook: "East Austin legend. Southern-Cajun-Tex-Mex soul. Go now.",
+          dont_miss: "Fried catfish, meatloaf, chicken-fried steak, crawfish étouffée",
+          website: "https://www.hooverscooking.com",
+          image: "https://images.unsplash.com/photo-1562967914-608f82629710?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 6,
+          name: "Lucy's Fried Chicken",
+          neighborhood: "South Congress",
+          address: "2218 College Ave, Austin, TX 78704",
+          lat: 30.2485, lng: -97.7556,
+          cuisine_tags: ["Fried Chicken", "Southern Bar", "Patio"],
+          price: "$$",
+          score: 8.7,
+          perfect_for: ["Fried chicken + beer", "SoCo patio", "Casual dinner"],
+          editorial: "Lucy's is the restaurant-meets-bar that South Austin needed — excellent fried chicken, cold beer, a big patio, and live music. The fried chicken is brined and crispy with a spice blend that has just enough kick. The waffle fries are addictive. The vibe is casual and friendly, perfect for the night you want great food without taking anything too seriously.",
+          hook: "Fried chicken, cold beer, SoCo patio. The perfect hang.",
+          dont_miss: "Original fried chicken, waffle fries, frozen cocktails",
+          website: "https://www.lucysfriedchicken.com",
+          image: "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 7,
+          name: "Tumble 22",
+          neighborhood: "Multiple Locations",
+          address: "7211 Burnet Rd, Austin, TX 78757",
+          lat: 30.3538, lng: -97.7378,
+          cuisine_tags: ["Nashville Hot Chicken", "Spicy", "Fast Casual"],
+          price: "$",
+          score: 8.5,
+          perfect_for: ["Hot chicken fix", "Spice levels", "Quick and fiery"],
+          editorial: "Austin's Nashville hot chicken answer, growing from a single trailer to seven locations in five years. The heat levels range from Southern (no heat) to Bless Your Heart (bring a towel). The chicken is crispy and juicy under the spice, the coleslaw provides relief, and the pickles are essential. Choose your heat wisely — the jump from medium to hot is no joke.",
+          hook: "Nashville hot chicken in Austin. Choose your heat level wisely.",
+          dont_miss: "Hot chicken tenders (Medium heat), coleslaw, pickles",
+          website: "https://tumble22.com",
+          image: "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 8,
+          name: "Moonshine Patio Bar & Grill",
+          neighborhood: "Downtown",
+          address: "303 Red River St, Austin, TX 78701",
+          lat: 30.2654, lng: -97.7371,
+          cuisine_tags: ["Southern Comfort", "Brunch", "Patio"],
+          price: "$$",
+          score: 8.3,
+          perfect_for: ["Sunday brunch", "Downtown Southern", "Tourist-friendly"],
+          editorial: "Moonshine has been a downtown Austin staple for two decades, serving elevated Southern comfort food in a restored 1850s building. The Sunday brunch buffet is an all-you-can-eat tour through biscuits, chicken and waffles, shrimp and grits, and green chile mac and cheese. The patio is one of the nicest downtown. Not cutting-edge, but consistently good and perfect for visitors.",
+          hook: "Downtown brunch institution. 1850s building, Southern buffet.",
+          dont_miss: "Sunday brunch buffet, green chile mac, corn dog shrimp",
+          website: "https://www.moonshinegrill.com",
+          image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 9,
+          name: "Vic & Al's",
+          neighborhood: "East Austin",
+          address: "1209 E 7th St, Austin, TX 78702",
+          lat: 30.2627, lng: -97.7312,
+          cuisine_tags: ["Southern-Italian", "Neighborhood", "Wine"],
+          price: "$$",
+          score: 8.2,
+          perfect_for: ["Neighborhood dinner", "Southern-Italian comfort", "Wine list"],
+          editorial: "A charming East Austin neighborhood spot that blends Southern and Italian influences into something uniquely comfortable. The pasta is fresh, the fried chicken is excellent, and the wine list is thoughtful without being pretentious. The kind of restaurant every neighborhood wishes it had — warm, reliable, and just interesting enough to keep you coming back. One of Yelp's top-rated Southern spots in Austin.",
+          hook: "Southern meets Italian. East Austin neighborhood gem.",
+          dont_miss: "Fried chicken, fresh pasta, seasonal vegetables, wine list",
+          website: "https://www.vicandals.com",
+          image: "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=600&h=450&fit=crop"
+        }
+      ]
+    },
+
+    // =========================================================================
+    // 9. FRENCH / EUROPEAN FINE DINING
+    // =========================================================================
+    {
+      id: "french-european",
+      name: "French / European Fine Dining",
+      tagline: "Brasseries, wine gardens, and tasting menus.",
+      image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&h=450&fit=crop",
+      editorial: `Austin's fine dining scene has matured dramatically in the past decade, with French and European-influenced restaurants leading the charge. Emmer & Rye brought a Michelin Green Star for sustainability. Justine's Brasserie proved East Austin could support a late-night French bistro with disco balls and bordello-red walls. Lenoir created a wine garden concept that turns South First Street into Provence.
+
+What makes Austin's European fine dining different from New York or San Francisco: the Texas ingredient advantage. These chefs aren't importing everything from France — they're using Hill Country produce, Gulf seafood, and Texas beef, then applying French technique. Emmer & Rye's menu changes daily based on the farmer's haul. Le Calamar bills itself as "French-Texan." Even Launderette, in a converted laundromat, serves Mediterranean-inflected food with Texas soul.
+
+The price range is surprisingly accessible. Lenoir's three-course dinner is $45. Épicerie's French-Louisiana café feels like a neighborhood bistro. Even Emmer & Rye's tasting menu is reasonable by Michelin standards. The only true splurge is Olamaie (in our Southern category) — but at $175 for four courses, it's still cheaper than its New York equivalents.`,
+      restaurants: [
+        {
+          rank: 1,
+          name: "Emmer & Rye",
+          neighborhood: "Rainey Street",
+          address: "51 Rainey St, Austin, TX 78701",
+          lat: 30.2589, lng: -97.7385,
+          cuisine_tags: ["Seasonal", "Michelin Green Star", "Fermentation"],
+          price: "$$$",
+          score: 9.5,
+          perfect_for: ["Michelin experience", "Sustainability lovers", "Seasonal dining"],
+          editorial: "Michelin Green Star and Bib Gourmand — recognized for both sustainability and value. Chef Kevin Fink's menu changes daily based on the farmer's haul, featuring over 100 different dishes each year. The grain mill, fermentation projects, and seasonal tasting menus have earned national 'Best Restaurants in America' recognition. On Rainey Street, which adds a fun energy to what could be a stuffy fine dining experience.",
+          hook: "Michelin Green Star. Menu changes daily. 100+ dishes per year.",
+          dont_miss: "Seasonal tasting menu, house-fermented dishes, dim sum cart",
+          website: "https://emmerandrye.com",
+          image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 2,
+          name: "Justine's Brasserie",
+          neighborhood: "East Austin",
+          address: "4710 E 5th St, Austin, TX 78702",
+          lat: 30.2589, lng: -97.7058,
+          cuisine_tags: ["French Brasserie", "Late Night", "Bohemian"],
+          price: "$$$",
+          score: 9.3,
+          perfect_for: ["Late-night dinner", "Romantic evening", "East Austin vibes"],
+          editorial: "Bordello-red walls, disco balls in the courtyard, steak frites at midnight — Justine's is the most atmospheric restaurant in Austin. The French bistro menu is executed with heart: escargots in garlic butter, crème brûlée with a perfect crack, and a wine list that skews French and natural. Open late, which makes it the only real fine dining option for night owls. The courtyard on a warm evening is peak Austin romance.",
+          hook: "French brasserie with disco balls. Steak frites at midnight.",
+          dont_miss: "Steak frites, escargots, crème brûlée, courtyard dining",
+          website: "https://justines1937.com",
+          image: "https://images.unsplash.com/photo-1550966871-3ed3cdb51f3a?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 3,
+          name: "Le Calamar",
+          neighborhood: "South First",
+          address: "1600 S 1st St, Austin, TX 78704",
+          lat: 30.2468, lng: -97.7595,
+          cuisine_tags: ["French-Texan", "Michelin Guide", "Wine Bar"],
+          price: "$$$",
+          score: 9.1,
+          perfect_for: ["French-Texan fusion", "Wine evening", "New Austin dining"],
+          editorial: "Opened May 2025 and earned Michelin Guide recognition almost immediately. Le Calamar bills itself as 'French-Texan' — classic bistro technique applied to Texas ingredients — and the combination works beautifully. The wine bar element is strong, the room is intimate, and the menu has the confidence of a team that's been thinking about this concept for years. The newest essential French restaurant in Austin.",
+          hook: "French-Texan bistro. Michelin recognized within months of opening.",
+          dont_miss: "Daily fish, steak au poivre, French wine selection",
+          website: "https://www.le-calamar.com",
+          image: "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 4,
+          name: "Lenoir",
+          neighborhood: "South First / Bouldin Creek",
+          address: "1807 S 1st St, Austin, TX 78704",
+          lat: 30.2450, lng: -97.7597,
+          cuisine_tags: ["Wine Garden", "Seasonal", "Intimate"],
+          price: "$$$",
+          score: 9.0,
+          perfect_for: ["Romantic dinner", "Wine garden", "Intimate evening"],
+          editorial: "Todd Duplechan and Jessica Maher built a 34-seat dining room and wine garden on South First that feels like a secret Provençal courtyard. The three-course dinner ($45) rotates seasonally and features locally sourced ingredients curated with French technique. The wine garden is the star — string lights, live oaks, and a carefully chosen wine list. One of Austin's most romantic restaurants at a surprisingly accessible price.",
+          hook: "Backyard wine garden on South First. Three courses for $45.",
+          dont_miss: "Three-course prix fixe, wine garden seating, seasonal dessert",
+          website: "https://www.lenoirrestaurant.com",
+          image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 5,
+          name: "Launderette",
+          neighborhood: "East Austin (Holly)",
+          address: "2115 Holly St, Austin, TX 78702",
+          lat: 30.2553, lng: -97.7244,
+          cuisine_tags: ["Mediterranean", "Contemporary", "Michelin Recommended"],
+          price: "$$$",
+          score: 8.9,
+          perfect_for: ["Brunch", "Mediterranean dinner", "Neighborhood fine dining"],
+          editorial: "A former laundromat turned into a Michelin Recommended contemporary café that serves Mediterranean-inflected food with Texas soul. Chef-Owner Rene Ortiz's menu moves fluidly between continents — Brussels sprouts with fish sauce vinaigrette, Gulf fish with chermoula, chocolate chip cookies that are famous in their own right. The brunch is one of the best in Austin.",
+          hook: "Michelin Recommended. Former laundromat. Famous cookies.",
+          dont_miss: "Brussels sprouts, Gulf fish, chocolate chip cookies, brunch",
+          website: "https://launderetteaustin.com",
+          image: "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 6,
+          name: "Epicerie",
+          neighborhood: "North Loop / Burnet",
+          address: "2307 Hancock Dr, Austin, TX 78756",
+          lat: 30.3246, lng: -97.7437,
+          cuisine_tags: ["French-Louisiana", "Cafe", "Boulangerie"],
+          price: "$$",
+          score: 8.8,
+          perfect_for: ["French cafe vibes", "Pastries", "Neighborhood lunch"],
+          editorial: "A French-Louisiana café, bar, and boulangerie that evolved from a grocer's shop into one of Austin's most charming neighborhood restaurants. The croissants are properly laminated, the croque monsieur is indulgent, and the evening bistro menu has the warmth of a Parisian neighborhood spot. Unpretentious French cooking at neighborhood prices — exactly what this part of Austin needed.",
+          hook: "French-Louisiana cafe and boulangerie. Croissants and croque monsieurs.",
+          dont_miss: "Croissants, croque monsieur, evening bistro specials",
+          website: "https://www.epicerieaustin.com",
+          image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 7,
+          name: "Aba",
+          neighborhood: "Downtown / 2nd Street",
+          address: "200 Lavaca St, Austin, TX 78701",
+          lat: 30.2643, lng: -97.7461,
+          cuisine_tags: ["Mediterranean", "Rooftop", "Mezze"],
+          price: "$$$",
+          score: 8.6,
+          perfect_for: ["Rooftop dinner", "Mediterranean mezze", "Downtown date"],
+          editorial: "Aba brings bright Mediterranean cooking to a rooftop downtown setting with views of Lady Bird Lake. The mezze spread is excellent — hummus, baba ganoush, whipped feta — and the kebabs and wood-fired dishes have real flavor. The rooftop bar is one of the prettiest outdoor dining spaces in Austin. Not quite French, not quite Israeli — a smart, crowd-pleasing Mediterranean concept.",
+          hook: "Rooftop Mediterranean downtown. Mezze, kebabs, Lake views.",
+          dont_miss: "Mezze spread, wood-fired lamb, whipped feta, rooftop cocktails",
+          website: "https://www.abarestaurant.com",
+          image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 8,
+          name: "Wax Myrtle's",
+          neighborhood: "Rainey Street",
+          address: "96 Rainey St, Austin, TX 78701",
+          lat: 30.2588, lng: -97.7379,
+          cuisine_tags: ["All-Day Cafe", "European", "Wine Bar"],
+          price: "$$",
+          score: 8.4,
+          perfect_for: ["All-day dining", "Wine bar", "Rainey Street alternative"],
+          editorial: "From the Emmer & Rye Hospitality Group, Wax Myrtle's is an all-day European-inflected café on Rainey Street. Morning pastries and coffee, afternoon sandwiches, evening wine and small plates. The same commitment to sourcing and fermentation as their flagship, but in a more casual, drop-in format. The natural wine list is excellent, and the weekend brunch is a Rainey Street sleeper hit.",
+          hook: "All-day cafe from the Emmer & Rye team. Rainey Street.",
+          dont_miss: "Morning pastries, natural wine, weekend brunch",
+          website: "https://www.waxmyrtles.com",
+          image: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 9,
+          name: "Juniper",
+          neighborhood: "East Austin",
+          address: "2400 E Cesar Chavez St, Austin, TX 78702",
+          lat: 30.2551, lng: -97.7216,
+          cuisine_tags: ["Italian-Influenced", "Contemporary", "Seasonal"],
+          price: "$$$",
+          score: 8.3,
+          perfect_for: ["Quiet dinner", "Italian wine", "East Austin special occasion"],
+          editorial: "From the Emmer & Rye team, Juniper focuses on Italian-influenced seasonal cooking with a serious wine program. The pasta is house-made and excellent, the proteins are sourced with care, and the room is warm without being fussy. Less talked-about than its sibling restaurants, which means easier reservations for what is genuinely one of the best Italian-leaning dinners in Austin.",
+          hook: "Italian-influenced seasonal. From the Emmer & Rye team.",
+          dont_miss: "House-made pasta, seasonal proteins, Italian wine list",
+          website: "https://juniperaustin.com",
+          image: "https://images.unsplash.com/photo-1481833761820-0509d3217039?w=600&h=450&fit=crop"
+        }
+      ]
+    },
+
+    // =========================================================================
+    // 10. FOOD TRUCK CULTURE
+    // =========================================================================
+    {
+      id: "food-trucks",
+      name: "Food Truck Culture",
+      tagline: "Where Austin's most creative eating happens.",
+      image: "https://images.unsplash.com/photo-1565123409695-7b5ef63a2efb?w=600&h=450&fit=crop",
+      editorial: `Austin's food truck scene isn't a sideshow — it's the main event. More Michelin-recognized restaurants started as trailers here than in any other American city. Nixta Taqueria, KG BBQ, Cuantos Tacos, LeRoy & Lewis — they all began as food trucks. When a chef in Austin has an idea, they don't lease a restaurant space; they buy a trailer and park it at a beer garden.
+
+The ecosystem that makes this work is the trailer park. Austin has dozens of dedicated food truck parks — Cosmic Coffee, The Picnic, Fareground, Thicket — where trucks cluster together and share a beer garden, picnic tables, and a vibe. The result is the world's most casual food hall format: order tacos from one truck, fried chicken from another, get a beer from the bar, and eat under live oak trees. It's the most Austin dining experience that exists.
+
+If you visit Austin and only eat at brick-and-mortar restaurants, you've missed the point. The food trucks are where the risks are taken, where immigrant cuisines get their first American audience, where a $10 plate can be as good as a $100 one. Check hours before you go (most trucks have limited schedules), bring cash as backup, and embrace the informality. This is how Austin eats.`,
+      restaurants: [
+        {
+          rank: 1,
+          name: "Spicy Boys Fried Chicken",
+          neighborhood: "Multiple Locations",
+          address: "1701 E 6th St, Austin, TX 78702",
+          lat: 30.2613, lng: -97.7244,
+          cuisine_tags: ["Asian-Inspired Fried Chicken", "Food Truck", "Spicy"],
+          price: "$",
+          score: 9.3,
+          perfect_for: ["Crispy chicken fix", "Spice lovers", "Food truck crawl"],
+          editorial: "Spicy Boys turned Asian-inspired fried chicken from a single truck into a four-location empire. The sandwiches are massive — crispy, juicy, aggressively seasoned — with heat levels from mild to face-melting. The boneless tenders are perfect for spice-cautious friends. Multiple locations across East Austin, Rainey Street, and St. Elmo mean you're never far from a fix.",
+          hook: "Asian-inspired fried chicken from a four-truck empire.",
+          dont_miss: "Original spicy chicken sandwich, boneless tenders, pickles",
+          website: "https://www.spicyboyschicken.com",
+          image: "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 2,
+          name: "Cuantos Tacos",
+          neighborhood: "East Austin",
+          address: "1108 E 12th St, Austin, TX 78702",
+          lat: 30.2728, lng: -97.7282,
+          cuisine_tags: ["Mexico City-Style", "Bib Gourmand", "Tacos"],
+          price: "$",
+          score: 9.1,
+          perfect_for: ["Michelin street tacos", "D.F.-style suadero", "Cheap excellence"],
+          editorial: "Michelin Bib Gourmand 2024 and 2025 — from a food truck. Chef Beto Robledo serves Mexico City-style tacos that are impossibly good for the price. The suadero taco is the star: crispy, beefy, served simply with onion and cilantro on a fresh tortilla. Open Tuesday through Sunday. The kind of truck that makes Austin food trucks famous worldwide.",
+          hook: "Michelin Bib Gourmand food truck. $3 tacos, $0 pretension.",
+          dont_miss: "Suadero taco, al pastor, campechano, salsa roja",
+          website: "https://www.cuantostacosaustin.com",
+          image: "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 3,
+          name: "Pueblo Viejo",
+          neighborhood: "South Austin (Cosmic Coffee)",
+          address: "121 Pickle Rd, Austin, TX 78704",
+          lat: 30.2326, lng: -97.7676,
+          cuisine_tags: ["Mexican Street Food", "Breakfast Tacos", "Beer Garden"],
+          price: "$",
+          score: 8.9,
+          perfect_for: ["Morning taco run", "Cosmic Coffee hangout", "All-day Mexican"],
+          editorial: "The Pueblo Viejo truck at Cosmic Coffee is the quintessential Austin food truck experience: chickens wandering underfoot, live oaks overhead, a cold beer from the bar, and a paper plate of perfectly made tacos. The breakfast tacos are generous and cheap, the gorditas are stuffed to bursting, and the salsa verde has real heat. Multiple locations, but Cosmic is the one you Instagram.",
+          hook: "Tacos at a beer garden with chickens. Peak Austin vibes.",
+          dont_miss: "Breakfast tacos, gorditas, salsa verde, Cosmic Coffee cold brew",
+          website: "https://www.puebloviejoaustin.com",
+          image: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 4,
+          name: "Dee Dee",
+          neighborhood: "South Austin",
+          address: "4204 Menchaca Rd, Austin, TX 78704",
+          lat: 30.2277, lng: -97.7879,
+          cuisine_tags: ["Northern Thai", "Street Food", "Isaan"],
+          price: "$",
+          score: 8.8,
+          perfect_for: ["Regional Thai discovery", "Adventurous eaters", "Cash-only gem"],
+          editorial: "A husband-and-wife food truck serving country-style Northeastern Thai food that you won't find at any brick-and-mortar Thai restaurant in Austin. Larb, som tum, sticky rice, boldly spiced curries — all from a small trailer with a devoted following. This is the kind of food truck that justifies the entire Austin food truck ecosystem: authentic, affordable, and irreplaceable.",
+          hook: "Isaan Thai from a trailer. Larb and som tum you can't get elsewhere.",
+          dont_miss: "Larb, som tum, sticky rice, massaman curry",
+          website: "https://www.deedeeatx.com",
+          image: "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 5,
+          name: "Valentina's Tex Mex BBQ",
+          neighborhood: "South Austin",
+          address: "11500 Menchaca Rd, Austin, TX 78748",
+          lat: 30.1605, lng: -97.7972,
+          cuisine_tags: ["BBQ-Mex Fusion", "Brisket Tacos", "Trailer"],
+          price: "$$",
+          score: 8.7,
+          perfect_for: ["Brisket taco invention", "Weekend BBQ run", "South Austin drive"],
+          editorial: "Miguel Vidal literally invented a food category — Tex-Mex BBQ — from a trailer in South Austin. The Real Deal Holyfield brisket taco started a city-wide trend. Yes, it also appears in our BBQ category, but Valentina's origin as a food truck is essential to the story. This is what happens when a chef with vision starts with a trailer instead of a restaurant lease.",
+          hook: "The brisket taco that launched a genre. Food truck legend.",
+          dont_miss: "The Real Deal Holyfield, brisket by the pound, breakfast tacos",
+          website: "https://www.valentinastexmexbbq.com",
+          image: "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 6,
+          name: "Paprika ATX",
+          neighborhood: "North Lamar",
+          address: "6539 N Lamar Blvd, Austin, TX 78752",
+          lat: 30.3376, lng: -97.7146,
+          cuisine_tags: ["Halal", "Middle Eastern", "Food Truck"],
+          price: "$",
+          score: 8.6,
+          perfect_for: ["Halal food", "Middle Eastern cravings", "Yelp Top 100"],
+          editorial: "Yelp's Top 100 Food Trucks list recognized Paprika ATX for doing something Austin's food truck scene needed: excellent halal Middle Eastern food. The shawarma is well-spiced and generously portioned, the falafel is crispy, and the garlic sauce ties everything together. Parked on North Lamar, it's become an essential stop for anyone who cares about Austin's food truck diversity.",
+          hook: "Yelp Top 100. Halal shawarma and falafel on North Lamar.",
+          dont_miss: "Chicken shawarma plate, falafel wrap, garlic sauce",
+          website: "https://www.paprikaatx.com",
+          image: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 7,
+          name: "T-Loc's Sonora Hot Dogs",
+          neighborhood: "Burnet Road",
+          address: "5000 Burnet Rd, Austin, TX 78756",
+          lat: 30.3246, lng: -97.7404,
+          cuisine_tags: ["Sonoran Hot Dogs", "Mexican Street Food", "Late Night"],
+          price: "$",
+          score: 8.4,
+          perfect_for: ["Late-night eats", "Sonoran hot dog fix", "Cheap and satisfying"],
+          editorial: "Yelp ranked T-Loc's #8 on their national Top 100 Food Trucks list, and the reason is the Sonoran hot dog — wrapped in bacon, grilled, and loaded with pinto beans, tomatoes, jalapeño sauce, and mayo. It's a Tucson import that makes perfect sense in Austin. Open late, which makes it the ideal post-bar food truck for the Burnet Road corridor.",
+          hook: "Yelp #8 nationally. Bacon-wrapped Sonoran hot dogs.",
+          dont_miss: "Sonoran hot dog, carne asada fries, elote",
+          website: "https://www.tlocssonorahotdogs.com",
+          image: "https://images.unsplash.com/photo-1619740455993-9d701c4f4b2b?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 8,
+          name: "Veracruz All Natural",
+          neighborhood: "Multiple Locations",
+          address: "2505 Webberville Rd, Austin, TX 78702",
+          lat: 30.2615, lng: -97.7092,
+          cuisine_tags: ["Breakfast Tacos", "All-Natural", "Multi-Location"],
+          price: "$",
+          score: 8.3,
+          perfect_for: ["The OG food truck", "Migas tacos", "Austin icon"],
+          editorial: "Yes, Veracruz appears in our Breakfast Tacos category too — but its origin as a food truck is inseparable from its identity. Reina and Maritza Vazquez grew Veracruz from a single trailer to eight locations while maintaining the quality and spirit of the original. The Webberville Road location still has the food truck energy that made them famous. Proof that Austin food trucks can become empires.",
+          hook: "From one trailer to eight locations. The food truck success story.",
+          dont_miss: "Migas taco, fresh-squeezed juices, al pastor",
+          website: "https://www.veracruzallnatural.com",
+          image: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&h=450&fit=crop"
+        },
+        {
+          rank: 9,
+          name: "KG BBQ",
+          neighborhood: "East Austin",
+          address: "1014 E 6th St, Austin, TX 78702",
+          lat: 30.2629, lng: -97.7322,
+          cuisine_tags: ["Egyptian-Texas BBQ", "Fusion", "Bib Gourmand"],
+          price: "$$",
+          score: 8.2,
+          perfect_for: ["Global BBQ fusion", "Weekend-only discovery", "Bib Gourmand truck"],
+          editorial: "Also in our BBQ category, but KG BBQ's story is pure food truck culture: an Egyptian-born pitmaster parking a trailer at an East Austin brewery and earning a Michelin Bib Gourmand cooking za'atar-rubbed brisket. Thursday through Sunday only, which adds to the treasure-hunt feel. The pistachio rice pudding is unlike any BBQ dessert you've ever had.",
+          hook: "Egyptian-Texas BBQ. Bib Gourmand from a trailer. Thu-Sun only.",
+          dont_miss: "Za'atar brisket, pistachio rice pudding, Egyptian sides",
+          website: "https://www.kgbbq.com",
+          image: "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=600&h=450&fit=crop"
+        }
+      ]
+    }
+  ]
+};
+
+// Export for use in HTML
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = YESCHEF_DATA;
+}
+
+</script>
+<script>
+// ============================================================
+// APP
+// ============================================================
+(function(){
+  const data = typeof YESCHEF_DATA !== 'undefined' ? YESCHEF_DATA : null;
+  if(!data){document.body.innerHTML='<p style="padding:40px;color:red">Error: data not loaded</p>';return}
+
+  const landing = document.getElementById('landing');
+  const categoryPanels = document.getElementById('categoryPanels');
+  const categoryGrid = document.getElementById('categoryGrid');
+  const backBtn = document.getElementById('backBtn');
+  const modalOverlay = document.getElementById('modalOverlay');
+  const modalPanel = document.getElementById('modalPanel');
+
+  let currentCategory = null;
+
+  // — Build category grid on landing —
+  data.categories.forEach((cat,i) => {
+    const card = document.createElement('div');
+    card.className = 'category-card';
+    card.style.animationDelay = (i * 60) + 'ms';
+    card.onclick = () => showCategory(cat.id);
+    card.innerHTML = `
+      <img class="category-card-img" src="${cat.image}" alt="${cat.name}" loading="lazy">
+      <div class="category-card-body">
+        <div class="category-card-name">${cat.name}</div>
+        <div class="category-card-tagline">${cat.tagline}</div>
+        <div class="category-card-count">${cat.restaurants.length} restaurants</div>
+      </div>
+    `;
+    categoryGrid.appendChild(card);
+  });
+
+  // — Build category panels —
+  data.categories.forEach(cat => {
+    const section = document.createElement('section');
+    section.className = 'section-category';
+    section.id = 'cat-' + cat.id;
+
+    const editorialParas = cat.editorial.split('\n\n').map(p=>`<p>${p.trim()}</p>`).join('');
+
+    let restaurantCards = '';
+    cat.restaurants.forEach((r,i) => {
+      const tags = r.cuisine_tags.map(t=>`<span class="rest-card-tag">${t}</span>`).join('');
+      restaurantCards += `
+        <div class="restaurant-card" data-delay="${i*50}" onclick='openModal(${JSON.stringify(r).replace(/'/g,"&#39;")})'>
+          <div class="rest-card-img-wrap">
+            <img class="rest-card-img" src="${r.image}" alt="${r.name}" loading="lazy">
+            <div class="badge-rank">#${r.rank}</div>
+            <div class="badge-score">${r.score}</div>
+          </div>
+          <div class="rest-card-body">
+            <div class="rest-card-name">${r.name}</div>
+            <div class="rest-card-meta">${r.neighborhood} · ${r.price}</div>
+            <div class="rest-card-tags">${tags}</div>
+            <div class="rest-card-hook">${r.hook}</div>
+          </div>
+        </div>
+      `;
+    });
+
+    section.innerHTML = `
+      <div class="cat-hero">
+        <h2>${cat.name}</h2>
+        <div class="cat-editorial">${editorialParas}</div>
+      </div>
+      <div class="restaurant-grid">${restaurantCards}</div>
+    `;
+    categoryPanels.appendChild(section);
+  });
+
+  // — Navigation —
+  window.showLanding = function(){
+    landing.style.display = '';
+    document.querySelectorAll('.section-category').forEach(s=>s.classList.remove('active'));
+    backBtn.style.display = 'none';
+    currentCategory = null;
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+
+  window.showCategory = function(id){
+    landing.style.display = 'none';
+    document.querySelectorAll('.section-category').forEach(s=>s.classList.remove('active'));
+    const panel = document.getElementById('cat-'+id);
+    if(panel){
+      panel.classList.add('active');
+      backBtn.style.display = 'flex';
+      currentCategory = id;
+      window.scrollTo({top:0});
+      // Staggered animation for restaurant cards
+      const cards = panel.querySelectorAll('.restaurant-card');
+      cards.forEach((card,i)=>{
+        card.style.animationDelay = (i*50)+'ms';
+        card.classList.remove('visible');
+        requestAnimationFrame(()=>{
+          requestAnimationFrame(()=>{
+            card.classList.add('visible');
+          });
+        });
+      });
+    }
+  };
+
+  // — Modal —
+  window.openModal = function(r){
+    document.getElementById('modalImg').src = r.image;
+    document.getElementById('modalScore').textContent = r.score;
+    document.getElementById('modalName').textContent = r.name;
+    document.getElementById('modalAddress').textContent = r.address;
+    document.getElementById('modalEditorial').textContent = r.editorial;
+    document.getElementById('modalDontMiss').textContent = r.dont_miss;
+
+    // Tags
+    const tagsEl = document.getElementById('modalTags');
+    tagsEl.innerHTML = '';
+    r.cuisine_tags.forEach(t=>{
+      tagsEl.innerHTML += `<span class="modal-tag cuisine">${t}</span>`;
+    });
+    r.perfect_for.forEach(t=>{
+      tagsEl.innerHTML += `<span class="modal-tag vibe">${t}</span>`;
+    });
+
+    // Perfect for
+    document.getElementById('modalPerfect').innerHTML =
+      '<strong>Perfect for:</strong> ' + r.perfect_for.join(' · ');
+
+    // Actions
+    const actionsEl = document.getElementById('modalActions');
+    const websiteUrl = r.website || '#';
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.name+' '+r.address)}`;
+    actionsEl.innerHTML = `
+      <a href="${websiteUrl}" target="_blank" rel="noopener" class="modal-btn primary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+        Website
+      </a>
+      <a href="${mapsUrl}" target="_blank" rel="noopener" class="modal-btn secondary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Directions
+      </a>
+    `;
+
+    modalOverlay.classList.add('active');
+    modalPanel.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  };
+
+  window.closeModal = function(){
+    modalOverlay.classList.remove('active');
+    modalPanel.classList.remove('active');
+    document.body.style.overflow = '';
+  };
+
+  // Close modal on Escape
+  document.addEventListener('keydown', e=>{
+    if(e.key==='Escape') closeModal();
+  });
+
+  // Back button on browser history
+  window.addEventListener('popstate', ()=>{
+    if(modalPanel.classList.contains('active')){
+      closeModal();
+    } else if(currentCategory){
+      showLanding();
+    }
+  });
+
+})();
+</script>
+</body>
+</html>
