@@ -67,13 +67,30 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 }
 .city-nav a.active{color:var(--text-primary);border-color:var(--border-light)}
 .city-nav a:hover{color:var(--text-secondary)}
-.back-btn{
-  display:none;align-items:center;gap:6px;
-  font-size:0.85rem;color:var(--text-secondary);
-  transition:color .2s;cursor:pointer;
+.back-btn-header{display:none}
+
+/* BREADCRUMB NAV */
+.breadcrumb-bar{
+  display:none;
+  max-width:1200px;margin:0 auto;
+  padding:12px 24px;
+  font-size:0.82rem;color:var(--text-muted);
+  align-items:center;gap:6px;
 }
-.back-btn:hover{color:var(--text-primary)}
-.back-btn svg{width:16px;height:16px}
+.breadcrumb-bar.active{display:flex}
+.breadcrumb-bar a{
+  color:var(--text-muted);transition:color .2s;cursor:pointer;
+}
+.breadcrumb-bar a:hover{color:var(--text-primary)}
+.breadcrumb-sep{margin:0 4px;opacity:0.4}
+.breadcrumb-current{color:var(--text-secondary)}
+.breadcrumb-back{
+  display:inline-flex;align-items:center;gap:4px;
+  color:var(--text-muted);cursor:pointer;transition:color .2s;
+  margin-left:auto;font-size:0.82rem;
+}
+.breadcrumb-back:hover{color:var(--text-primary)}
+.breadcrumb-back svg{width:14px;height:14px}
 
 /* ============================================================
    HERO
@@ -93,6 +110,27 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
   font-size:1.05rem;color:var(--text-secondary);
   line-height:1.7;max-width:540px;
 }
+
+/* ============================================================
+   ACCOLADE BADGES
+   ============================================================ */
+.accolade-badges{
+  display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;
+}
+.accolade-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:0.6rem;text-transform:uppercase;
+  letter-spacing:0.06em;font-weight:600;
+  padding:3px 7px;border-radius:var(--radius-xs);
+}
+.accolade-badge.michelin{background:#900;color:#fff}
+.accolade-badge.michelin-bib{background:#7a2e00;color:#fff}
+.accolade-badge.michelin-green{background:#2d6a2e;color:#fff}
+.accolade-badge.michelin-rec{background:#444;color:#fff}
+.accolade-badge.james-beard{background:#8B6914;color:#fff}
+.accolade-badge.yelp{background:#d32323;color:#fff}
+.accolade-badge.tx-monthly{background:#1a5276;color:#fff}
+.accolade-badge svg{width:10px;height:10px;fill:currentColor}
 
 /* ============================================================
    CATEGORY GRID (Landing)
@@ -142,7 +180,21 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
   display:none;max-width:1100px;margin:0 auto;padding:0 24px 80px;
 }
 .section-category.active{display:block}
-.cat-hero{max-width:720px;margin:0 auto 48px;padding-top:40px}
+.cat-hero{
+  position:relative;overflow:hidden;
+  border-radius:var(--radius);margin:0 0 48px;
+  padding:60px 40px 48px;
+}
+.cat-hero-bg{
+  position:absolute;inset:0;z-index:0;
+  background-size:cover;background-position:center;
+  filter:brightness(0.25) saturate(0.6);
+}
+.cat-hero-bg::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(10,10,10,0.3) 0%,rgba(10,10,10,0.7) 100%);
+}
+.cat-hero-content{position:relative;z-index:1;max-width:780px}
 .cat-hero h2{
   font-family:var(--serif);font-size:clamp(2rem,5vw,3rem);
   font-weight:400;line-height:1.15;margin-bottom:24px;
@@ -343,7 +395,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
   .category-card-name{font-size:1.5rem}
   .category-card-tagline{font-size:0.88rem}
   .section-category{max-width:1200px;padding:0 48px 100px}
-  .cat-hero{max-width:780px;padding-top:56px;margin-bottom:56px}
+  .breadcrumb-bar{padding:14px 48px}
+  .cat-hero{padding:80px 56px 64px;margin-bottom:56px}
   .cat-hero h2{font-size:3.2rem}
   .cat-editorial{font-size:1rem;columns:2;column-gap:40px}
   .cat-editorial p{break-inside:avoid}
@@ -399,9 +452,12 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
   .category-card-tagline{font-size:0.78rem;margin-bottom:4px}
   .category-card-count{font-size:0.68rem}
   .section-category{padding:0 16px 60px}
-  .cat-hero{padding-top:20px;margin-bottom:28px}
+  .breadcrumb-bar{padding:10px 16px;font-size:0.75rem}
+  .cat-hero{padding:36px 20px 28px;margin-bottom:28px;border-radius:var(--radius-sm)}
   .cat-hero h2{font-size:1.8rem;margin-bottom:16px}
   .cat-editorial{font-size:0.88rem;line-height:1.7}
+  .accolade-badges{gap:4px;margin-bottom:6px}
+  .accolade-badge{font-size:0.55rem;padding:2px 5px}
   .restaurant-grid{grid-template-columns:1fr;gap:14px}
   .restaurant-card{display:flex;flex-direction:row;align-items:stretch}
   .rest-card-img-wrap{
@@ -439,18 +495,23 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 
 <!-- HEADER -->
 <header class="site-header">
-  <div style="display:flex;align-items:center;gap:16px">
-    <button class="back-btn" id="backBtn" onclick="showLanding()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-      Back
-    </button>
-    <a class="logo" href="#" onclick="showLanding();return false">Yes<span>Chef!</span></a>
-  </div>
+  <a class="logo" href="#" onclick="showLanding();return false">Yes<span>Chef!</span></a>
   <nav class="city-nav">
     <a href="#" class="active">Austin</a>
     <a href="#" style="opacity:0.35;pointer-events:none">Philadelphia</a>
   </nav>
 </header>
+
+<!-- BREADCRUMB -->
+<nav class="breadcrumb-bar" id="breadcrumbBar">
+  <a onclick="showLanding();return false">Austin</a>
+  <span class="breadcrumb-sep">/</span>
+  <span class="breadcrumb-current" id="breadcrumbCat"></span>
+  <span class="breadcrumb-back" id="breadcrumbBack" onclick="navBack()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    Back
+  </span>
+</nav>
 
 <!-- LANDING -->
 <div id="landing">
@@ -2138,11 +2199,34 @@ if (typeof module !== 'undefined' && module.exports) {
   const landing = document.getElementById('landing');
   const categoryPanels = document.getElementById('categoryPanels');
   const categoryGrid = document.getElementById('categoryGrid');
-  const backBtn = document.getElementById('backBtn');
+  const breadcrumbBar = document.getElementById('breadcrumbBar');
+  const breadcrumbCat = document.getElementById('breadcrumbCat');
   const modalOverlay = document.getElementById('modalOverlay');
   const modalPanel = document.getElementById('modalPanel');
 
   let currentCategory = null;
+  let currentCategoryName = '';
+
+  // — Accolade detection —
+  function getAccolades(r) {
+    const badges = [];
+    const text = (r.editorial + ' ' + r.hook + ' ' + r.cuisine_tags.join(' ')).toLowerCase();
+    if (text.includes('michelin star') || r.cuisine_tags.some(t=>t.toLowerCase()==='michelin star'))
+      badges.push({cls:'michelin',label:'Michelin ★'});
+    else if (text.includes('michelin green star'))
+      badges.push({cls:'michelin-green',label:'Michelin Green ★'});
+    else if (text.includes('bib gourmand'))
+      badges.push({cls:'michelin-bib',label:'Bib Gourmand'});
+    else if (text.includes('michelin recommended') || r.cuisine_tags.some(t=>t.toLowerCase()==='michelin recommended'))
+      badges.push({cls:'michelin-rec',label:'Michelin'});
+    if (text.includes('james beard'))
+      badges.push({cls:'james-beard',label:'James Beard'});
+    if (text.includes('yelp top 100') || text.includes('yelp #'))
+      badges.push({cls:'yelp',label:'Yelp Top 100'});
+    if (text.includes('tx monthly') || text.includes('texas monthly'))
+      badges.push({cls:'tx-monthly',label:'TX Monthly'});
+    return badges;
+  }
 
   // — Build category grid on landing —
   data.categories.forEach((cat,i) => {
@@ -2171,7 +2255,12 @@ if (typeof module !== 'undefined' && module.exports) {
 
     let restaurantCards = '';
     cat.restaurants.forEach((r,i) => {
-      const tags = r.cuisine_tags.map(t=>`<span class="rest-card-tag">${t}</span>`).join('');
+      const tags = r.cuisine_tags.filter(t => {
+        const tl = t.toLowerCase();
+        return !['michelin star','michelin recommended','james beard','bib gourmand','michelin green star'].includes(tl);
+      }).map(t=>`<span class="rest-card-tag">${t}</span>`).join('');
+      const accolades = getAccolades(r);
+      const badgeHtml = accolades.length ? '<div class="accolade-badges">' + accolades.map(a=>`<span class="accolade-badge ${a.cls}">${a.label}</span>`).join('') + '</div>' : '';
       restaurantCards += `
         <div class="restaurant-card" data-delay="${i*50}" onclick='openModal(${JSON.stringify(r).replace(/'/g,"&#39;")})'>
           <div class="rest-card-img-wrap">
@@ -2180,6 +2269,7 @@ if (typeof module !== 'undefined' && module.exports) {
             <div class="badge-score">${r.score}</div>
           </div>
           <div class="rest-card-body">
+            ${badgeHtml}
             <div class="rest-card-name">${r.name}</div>
             <div class="rest-card-meta">${r.neighborhood} · ${r.price}</div>
             <div class="rest-card-tags">${tags}</div>
@@ -2191,8 +2281,11 @@ if (typeof module !== 'undefined' && module.exports) {
 
     section.innerHTML = `
       <div class="cat-hero">
-        <h2>${cat.name}</h2>
-        <div class="cat-editorial">${editorialParas}</div>
+        <div class="cat-hero-bg" style="background-image:url('${cat.image}')"></div>
+        <div class="cat-hero-content">
+          <h2>${cat.name}</h2>
+          <div class="cat-editorial">${editorialParas}</div>
+        </div>
       </div>
       <div class="restaurant-grid">${restaurantCards}</div>
     `;
@@ -2203,8 +2296,9 @@ if (typeof module !== 'undefined' && module.exports) {
   window.showLanding = function(){
     landing.style.display = '';
     document.querySelectorAll('.section-category').forEach(s=>s.classList.remove('active'));
-    backBtn.style.display = 'none';
+    breadcrumbBar.classList.remove('active');
     currentCategory = null;
+    currentCategoryName = '';
     window.scrollTo({top:0,behavior:'smooth'});
   };
 
@@ -2212,10 +2306,13 @@ if (typeof module !== 'undefined' && module.exports) {
     landing.style.display = 'none';
     document.querySelectorAll('.section-category').forEach(s=>s.classList.remove('active'));
     const panel = document.getElementById('cat-'+id);
+    const cat = data.categories.find(c=>c.id===id);
     if(panel){
       panel.classList.add('active');
-      backBtn.style.display = 'flex';
       currentCategory = id;
+      currentCategoryName = cat ? cat.name : id;
+      breadcrumbCat.textContent = currentCategoryName;
+      breadcrumbBar.classList.add('active');
       window.scrollTo({top:0});
       // Staggered animation for restaurant cards
       const cards = panel.querySelectorAll('.restaurant-card');
@@ -2229,6 +2326,10 @@ if (typeof module !== 'undefined' && module.exports) {
         });
       });
     }
+  };
+
+  window.navBack = function(){
+    if(currentCategory) showLanding();
   };
 
   // — Modal —
