@@ -182,8 +182,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .section-category.active{display:block}
 .cat-hero{
   position:relative;overflow:hidden;
-  border-radius:var(--radius);margin:0 0 48px;
-  padding:60px 40px 48px;
+  border-radius:var(--radius);margin:0 0 36px;
+  padding:48px 40px 40px;
 }
 .cat-hero-bg{
   position:absolute;inset:0;z-index:0;
@@ -396,9 +396,9 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
   .category-card-tagline{font-size:0.88rem}
   .section-category{max-width:1200px;padding:0 48px 100px}
   .breadcrumb-bar{padding:14px 48px}
-  .cat-hero{padding:80px 56px 64px;margin-bottom:56px}
+  .cat-hero{padding:56px 56px 48px;margin-bottom:44px}
   .cat-hero h2{font-size:3.2rem}
-  .cat-editorial{font-size:1rem;columns:2;column-gap:40px}
+  .cat-editorial{font-size:1.05rem}
   .cat-editorial p{break-inside:avoid}
   .restaurant-grid{grid-template-columns:repeat(3,1fr);gap:22px}
   .rest-card-body{padding:16px 18px 20px}
@@ -2251,7 +2251,11 @@ if (typeof module !== 'undefined' && module.exports) {
     section.className = 'section-category';
     section.id = 'cat-' + cat.id;
 
-    const editorialParas = cat.editorial.split('\n\n').map(p=>`<p>${p.trim()}</p>`).join('');
+    // Trim editorial to 2-3 sentences for a compact hero
+    const firstPara = cat.editorial.split('\n\n')[0].trim();
+    const sentences = firstPara.match(/[^.!?]+[.!?]+/g) || [firstPara];
+    const shortEditorial = sentences.slice(0, 3).join('').trim();
+    const editorialParas = `<p>${shortEditorial}</p>`;
 
     let restaurantCards = '';
     cat.restaurants.forEach((r,i) => {
